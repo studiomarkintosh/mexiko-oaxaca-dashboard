@@ -1,0 +1,955 @@
+// js/data.js
+// Mexiko Reise-Dashboard — Einzige Datenquelle
+// Alle JS-Module lesen window.MEXIKO_OAXACA. Kein import/export (CORS bei file://)
+// Updates: Direkt editieren + committen → automatisch live auf GitHub Pages
+
+window.DASHBOARD_NS = {
+
+  // ============================================================
+  // meta — Reise-Rahmendaten
+  // ============================================================
+  meta: {
+    title:        "Mexiko Winterurlaub 2026/27",
+    startDate:    "2026-12-01",
+    endDate:      "2027-01-29",
+    totalDays:    59,
+    totalNights:  59,
+    travelers:    { adults: 2, children: 1, childAge: 2 },
+    diet:         "vollständig vegetarisch",
+    budget:       { low: 9750, high: 12000, currency: "EUR" },
+    budgetNote:   "Ziel €100/Tag vor Ort (€5.900) + Flüge €3.846 + Reserve. Ohne Boutique-Hotels, mehr Märkte + Streetfood.",
+    dailyBudget:  { comfort: 230, backpacker: 100, backpackerLabel: "Budget-Ziel", backpackerRef: 45, backpackerRefNote: "Solo Backpacker Yucatán laut backpackinghacks.de (Hostel + Streetfood + Bus)" },
+    centerLat:    17.0732, centerLng: -96.7266, defaultZoom: 6
+  },
+
+  // ============================================================
+  // phases — 5 Reisephasen
+  // ============================================================
+  phases: [
+    {
+      id: 1,
+      name: "Mexico City",
+      emoji: "🏙",
+      color: "#6366F1",
+      flightIn: { route: "VIE → MEX", date: "01. Dez", type: "international" },
+      startDate: "2026-12-01",
+      endDate:   "2026-12-02",
+      nights: 2,
+      base: { lat: 19.4326, lng: -99.1332, name: "Mexico City (CDMX)" },
+      avgTempC: { min: 9, max: 22 },
+      weatherNote: "Trockenzeit, kühl abends (2240m)",
+      highlights: ["Teotihuacán", "Zócalo", "Xochimilco"],
+      buggyNote: "Uber/Taxi empfohlen, Metro mit Kinderwagen machbar",
+      seismikLevel: "hoch",
+      krimLevel: "erhoht",
+      days: [
+        {
+          date: "2026-12-01",
+          slots: [
+            { label: "Ankunft", items: [
+              { name: "Flug Wien → Mexiko City via Frankfurt", type: "transport", googleMapsUrl: "" },
+              { name: "Transfer Hotel, Ausruhen", type: "rest", googleMapsUrl: "" }
+            ]},
+            { label: "Mittagsschlaf", items: [] },
+            { label: "Nachmittag", items: [
+              { name: "Zócalo + Catedral Metropolitana", type: "sight", googleMapsUrl: "https://maps.google.com/?q=Zocalo+Mexico+City" },
+              { name: "Abendessen Barrio Chino oder veganes Café", type: "food", googleMapsUrl: "" }
+            ]}
+          ]
+        },
+        {
+          date: "2026-12-02",
+          slots: [
+            { label: "Früh starten", items: [
+              { name: "Teotihuacán — Pyramiden (Einritt: ~210 MXN / ~10€)", type: "sight", googleMapsUrl: "https://maps.google.com/?q=Teotihuacan+Mexico" },
+              { name: "Sonnenpyramide + Mondpyramide + Allee der Toten", type: "sight", googleMapsUrl: "" }
+            ]},
+            { label: "Mittagsschlaf / Pause vor Ort", items: [] },
+            { label: "Weiterreise", items: [
+              { name: "Rückkehr Mexico City, Koffer, früh schlafen", type: "rest", googleMapsUrl: "" },
+              { name: "Flug MEX → OAX (Morgen früh)", type: "transport", googleMapsUrl: "" }
+            ]}
+          ]
+        }
+      ]
+    },
+    {
+      id: 2,
+      name: "Oaxaca",
+      emoji: "🏔",
+      color: "#10B981",
+      flightIn: { route: "MEX → OAX", date: "03. Dez", type: "inland" },
+      startDate: "2026-12-03",
+      endDate:   "2026-12-18",
+      nights: 16,
+      base: { lat: 17.0669, lng: -96.7203, name: "Oaxaca Ciudad" },
+      avgTempC: { min: 10, max: 27 },
+      weatherNote: "Perfektes Wetter, sonnig + trocken, abends kühl (1550m)",
+      highlights: ["Monte Albán", "Mitla", "Hierve el Agua", "Zapoteken-Märkte"],
+      buggyNote: "Mietwagen für Tagesausflüge, Jalatlaco-Viertel ideal als Basis",
+      seismikLevel: "erhoht",
+      krimLevel: "niedrig",
+      days: [
+        {
+          date: "2026-12-03",
+          slots: [
+            { label: "Ankunft Oaxaca", items: [
+              { name: "Flug OAX, Einzug Hotel (Jalatlaco-Viertel)", type: "transport", googleMapsUrl: "" }
+            ]},
+            { label: "Mittagsschlaf", items: [] },
+            { label: "Erkundung", items: [
+              { name: "Zócalo Oaxaca + Mercado 20 de Noviembre", type: "sight", googleMapsUrl: "https://maps.google.com/?q=Zocalo+Oaxaca+Mexico" },
+              { name: "Herbívora — vegane Tacos (Abendessen)", type: "food", googleMapsUrl: "https://maps.google.com/?q=Herbivora+Oaxaca+Mexico" }
+            ]}
+          ]
+        },
+        {
+          date: "2026-12-07",
+          slots: [
+            { label: "Früh (08:00)", items: [
+              { name: "Monte Albán — Zapoteken-Hauptstadt (Eintritt: ~210 MXN, Kinder unter 13 gratis)", type: "sight", price: { mxn: 210, eur: 10 }, gratis: false, googleMapsUrl: "https://maps.google.com/?q=Monte+Alban+Oaxaca" }
+            ]},
+            { label: "Mittagsschlaf", items: [] },
+            { label: "Nachmittag", items: [
+              { name: "Tlacolula de Matamoros — Sonntagsmarkt (gratis)", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=Tlacolula+de+Matamoros+Oaxaca" }
+            ]}
+          ]
+        },
+        {
+          date: "2026-12-10",
+          slots: [
+            { label: "Tagesausflug", items: [
+              { name: "Mitla — Mixtekische Zikzackmuster (Eintritt: ~200 MXN)", type: "sight", price: { mxn: 200, eur: 10 }, gratis: false, googleMapsUrl: "https://maps.google.com/?q=Mitla+Oaxaca+Mexico" },
+              { name: "Yagul — weniger touristisch, gratis fast", type: "sight", gratis: false, googleMapsUrl: "https://maps.google.com/?q=Yagul+Oaxaca+Mexico" }
+            ]},
+            { label: "Mittagsschlaf", items: [] },
+            { label: "Hierve el Agua", items: [
+              { name: "Hierve el Agua — Versteinerte Wasserfälle (Eintritt: ~50 MXN)", type: "sight", price: { mxn: 50, eur: 2.5 }, gratis: false, googleMapsUrl: "https://maps.google.com/?q=Hierve+el+Agua+Oaxaca" }
+            ]}
+          ]
+        },
+        {
+          date: "2026-12-13",
+          slots: [
+            { label: "Markt-Tag", items: [
+              { name: "Ocotlán de Morelos — Freitagsmarkt (gratis)", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=Ocotlan+de+Morelos+Oaxaca" },
+              { name: "Arrazola — Alebrijes-Werkstätten (Holzfiguren)", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=Arrazola+Oaxaca" }
+            ]},
+            { label: "Mittagsschlaf", items: [] },
+            { label: "Nachmittag Stadt", items: [
+              { name: "Santo Domingo Kirche + Kulturzentrum", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=Santo+Domingo+Oaxaca" }
+            ]}
+          ]
+        },
+        {
+          date: "2026-12-19",
+          slots: [
+            { label: "Abreise → Sierra Sur", items: [
+              { name: "Mietwagen Oaxaca → Miahuatlán (1,5h) — letzte Stadt vor den Bergen", type: "transport", googleMapsUrl: "https://maps.google.com/?q=Miahuatlan+de+Porfirio+Diaz+Oaxaca" },
+              { name: "Markt Miahuatlán: lokales Mittagessen, Lebensmittel für die Berge einkaufen", type: "food", googleMapsUrl: "" }
+            ]},
+            { label: "Mittagsschlaf", items: [] },
+            { label: "Weiter in die Berge", items: [
+              { name: "San José del Pacífico (2.480m) — Cabañas beziehen, Nebelwald-Spaziergang", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=San+Jose+del+Pacifico+Oaxaca" }
+            ]}
+          ]
+        }
+      ]
+    },
+    {
+      id: 3,
+      name: "Sierra Sur",
+      emoji: "⛰",
+      color: "#84CC16",
+      startDate: "2026-12-19",
+      endDate:   "2026-12-24",
+      nights: 6,
+      base: { lat: 16.4833, lng: -96.8167, name: "Sierra Sur, Oaxaca" },
+      avgTempC: { min: 8, max: 22 },
+      weatherNote: "Bergklima: kühl bis kalt nachts (2.000–2.500m), tags angenehm. San José del Pacífico oft im Nebel.",
+      highlights: ["San José del Pacífico", "San Miguel Suchixtepec", "Pluma Hidalgo", "San Agustinillo", "Weihnachtsabend am Pazifik 🎄"],
+      buggyNote: "Mietwagen Pflicht (Bergstraße), Allrad empfohlen. Cabañas mit Holzofen — Kleinkind braucht Schichten.",
+      seismikLevel: "mittel",
+      krimLevel: "niedrig",
+      days: [
+        {
+          date: "2026-12-19",
+          slots: [
+            { label: "Miahuatlán → San José del Pacífico", items: [
+              { name: "Miahuatlán de Porfirio Díaz — Zapoteken-Marktstadt (1.660m), lokaler Markt", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=Miahuatlan+de+Porfirio+Diaz+Oaxaca" },
+              { name: "Weiterfahrt San José del Pacífico (2.480m), Cabañas Camino al Cielo", type: "rest", googleMapsUrl: "https://www.booking.com/hotel/mx/san-jose-del-pacifico-camino-al-cielo.html" }
+            ]},
+            { label: "Mittagsschlaf", items: [] },
+            { label: "Abend im Nebelwald", items: [
+              { name: "Spaziergang durch Kiefernwald, Sonnenuntergang über den Wolken (Richtung Meer)", type: "sight", gratis: true, googleMapsUrl: "" }
+            ]}
+          ]
+        },
+        {
+          date: "2026-12-21",
+          slots: [
+            { label: "Wandertag Sierra Sur", items: [
+              { name: "San Miguel Suchixtepec (2.365m) — Cascada Río Gurajolais + Cerro de Zimlaltepec", type: "daytrip", gratis: true, googleMapsUrl: "https://maps.google.com/?q=San+Miguel+Suchixtepec+Oaxaca" },
+              { name: "Ruta del Café Pluma — Bergdorf-Kaffeeroute (8 zapotekische Dörfer)", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=Pluma+Hidalgo+Oaxaca" }
+            ]},
+            { label: "Mittagsschlaf (in den Cabañas)", items: [] },
+            { label: "Aussichtspunkt", items: [
+              { name: "Puente Iluminado Sierra Sur — beleuchtete Hängebrücke im Bergwald (kaum bekannt)", type: "sight", gratis: true, googleMapsUrl: "https://oaxaca.eluniversal.com.mx/mas-de-oaxaca/como-llegar-al-puente-iluminado-de-la-sierra-sur-de-oaxaca/" }
+            ]}
+          ]
+        },
+        {
+          date: "2026-12-22",
+          slots: [
+            { label: "Abstieg zur Pazifikküste", items: [
+              { name: "Pluma Hidalgo — erste Kaffeeplantage Oaxacas, Führung + Frisch-Degustation", type: "daytrip", gratis: false, googleMapsUrl: "https://maps.google.com/?q=Pluma+Hidalgo+Oaxaca" }
+            ]},
+            { label: "Mittagsschlaf / Fahrt", items: [] },
+            { label: "Ankunft San Agustinillo", items: [
+              { name: "San Agustinillo — ruhigstes Fischerdorf der Oaxaca-Küste, 2km Sandstrand, grüne Flagge", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=San+Agustinillo+Oaxaca" },
+              { name: "Umami Café — vegetarische Küche direkt am Strand ⭐", type: "food", googleMapsUrl: "https://maps.google.com/?q=Umami+San+Agustinillo+Oaxaca" }
+            ]}
+          ]
+        },
+        {
+          date: "2026-12-24",
+          slots: [
+            { label: "Mazunte erkunden", items: [
+              { name: "Centro Mexicano de la Tortuga — Meeresschildkröten, kindgerecht (Eintritt: ~70 MXN)", type: "sight", gratis: false, googleMapsUrl: "https://maps.google.com/?q=Centro+Mexicano+de+la+Tortuga+Mazunte" },
+              { name: "Punta Cometa — Halbinsel-Wanderung, spektakulärer Ausblick", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=Punta+Cometa+Mazunte" },
+              { name: "Playa Rinconcito — familiärster Strand, geschützt durch Punta Cometa, flache Wellen", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=Playa+Rinconcito+Mazunte" }
+            ]},
+            { label: "Mittagsschlaf", items: [] },
+            { label: "Weihnachtsabend am Pazifik 🎄", items: [
+              { name: "Heiligabend-Sonnenuntergang über dem Pazifik — San Agustinillo Strand", type: "rest", googleMapsUrl: "" },
+              { name: "Weihnachtsessen vegetarisch (Umami oder Palapa-Restaurant am Strand)", type: "food", googleMapsUrl: "https://maps.google.com/?q=Umami+San+Agustinillo+Oaxaca" }
+            ]}
+          ]
+        }
+      ]
+    },
+    {
+      id: 4,
+      name: "Huatulco",
+      emoji: "🐋",
+      color: "#F59E0B",
+      driveIn: { route: "San Agustinillo → Huatulco", date: "25. Dez", duration: "45 min" },
+      startDate: "2026-12-25",
+      endDate:   "2027-01-06",
+      nights: 13,
+      base: { lat: 15.7742, lng: -96.1420, name: "Huatulco, Oaxaca" },
+      avgTempC: { min: 22, max: 31 },
+      weatherNote: "Warmste Phase! Trockenzeit, Buckelwal-Saison Dez–Feb",
+      highlights: ["Buckelwale", "La Ventanilla (Schildkröten)", "9 Buchten", "Silvester am Meer"],
+      buggyNote: "Taxi/Uber zwischen Buchten, Strand-Unebenheiten beachten",
+      seismikLevel: "mittel",
+      krimLevel: "niedrig",
+      days: [
+        {
+          date: "2026-12-26",
+          slots: [
+            { label: "Morgen Strand", items: [
+              { name: "Playa Maguey — familiärer Strand, flaches Wasser (gratis, Kombi ab Santa Cruz)", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=Playa+Maguey+Huatulco" }
+            ]},
+            { label: "Mittagsschlaf", items: [] },
+            { label: "Nachmittag", items: [
+              { name: "Playa La India — ruhiger, wenig Touristen", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=Playa+La+India+Huatulco" }
+            ]}
+          ]
+        },
+        {
+          date: "2026-12-28",
+          slots: [
+            { label: "Highlight: Buckelwale 🐋 (08:00 starten!)", items: [
+              { name: "Buckelwal-Tour (morgens, 3h) — ab 35–50 USD/P — lokale Anbieter Santa Cruz", type: "activity", googleMapsUrl: "https://maps.google.com/?q=Santa+Cruz+Huatulco+pier" },
+              { name: "Wichtig: Kind + Vomex/Ingwer, großes Boot wählen, kein Panga", type: "note", googleMapsUrl: "" }
+            ]},
+            { label: "Mittagsschlaf", items: [] },
+            { label: "Nachmittag", items: [
+              { name: "Crucecita Mercado + Iglesia", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=Crucecita+Huatulco" }
+            ]}
+          ]
+        },
+        {
+          date: "2027-01-02",
+          slots: [
+            { label: "Tagesausflug Schildkröten", items: [
+              { name: "La Ventanilla — Schildkröten-Naturreservat (Eintritt: ~80 MXN, Bootsfahrt im Mangroven-Kanal)", type: "sight", price: { mxn: 80, eur: 4 }, gratis: false, googleMapsUrl: "https://maps.google.com/?q=La+Ventanilla+Oaxaca" },
+              { name: "Release nach Sonnenuntergang — Kokosnuss-Schale als Hilfsmittel, kein direkter Kontakt", type: "note", googleMapsUrl: "" }
+            ]},
+            { label: "Mittagsschlaf", items: [] },
+            { label: "Kaffeefarmen", items: [
+              { name: "Llano Grande — Kaffeeplantage + Cascada (Ganztag, ~70–100 USD/P via Viator)", type: "activity", googleMapsUrl: "https://maps.google.com/?q=Llano+Grande+Sierra+Huatulco" }
+            ]}
+          ]
+        }
+      ]
+    },
+    {
+      id: 5,
+      name: "Yucatán",
+      emoji: "🌿",
+      color: "#EF4444",
+      flightIn: { route: "HUX → CUN", date: "07. Jan", type: "inland" },
+      startDate: "2027-01-07",
+      endDate:   "2027-01-27",
+      nights: 21,
+      base: { lat: 20.9674, lng: -89.5926, name: "Mérida, Yucatán" },
+      avgTempC: { min: 19, max: 29 },
+      weatherNote: "Trockenzeit, angenehm warm, Yucatán = sicherster Bundesstaat Mexikos",
+      highlights: ["Chichén Itzá", "Celestún Flamingos", "Laguna Bacalar", "Uxmal", "Isla Holbox"],
+      buggyNote: "Mietwagen essentiell (2 Wochen), nur Mautstraßen + Tageslicht fahren",
+      seismikLevel: "niedrig",
+      krimLevel: "niedrig",
+      days: [
+        {
+          date: "2027-01-07",
+          slots: [
+            { label: "Ankunft Yucatán", items: [
+              { name: "Flug HUX → CUN (oder OAX → CUN), Transfer Mérida", type: "transport", googleMapsUrl: "" }
+            ]},
+            { label: "Mittagsschlaf", items: [] },
+            { label: "Mérida erkunden", items: [
+              { name: "Plaza Grande + Catedral de Mérida (gratis)", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=Plaza+Grande+Merida+Yucatan" }
+            ]}
+          ]
+        },
+        {
+          date: "2027-01-09",
+          slots: [
+            { label: "Chichén Itzá (früh weg!)", items: [
+              { name: "Chichén Itzá — Weltwunder (Eintritt: ~600 MXN + Bundesstaat-Eintritt ~80 MXN, Kinder unter 13 gratis)", type: "sight", price: { mxn: 680, eur: 33 }, gratis: false, googleMapsUrl: "https://maps.google.com/?q=Chichen+Itza+Yucatan" },
+              { name: "El Castillo + Ballspielplatz + Cenote Sagrado", type: "sight", googleMapsUrl: "" }
+            ]},
+            { label: "Mittagsschlaf in Valladolid", items: [] },
+            { label: "Cenote Valladolid", items: [
+              { name: "Cenote Zaci (mitten in Valladolid, Eintritt 60 MXN, 9:00–17:30)", type: "sight", price: { mxn: 60, eur: 3 }, gratis: false, googleMapsUrl: "https://maps.google.com/?q=Cenote+Zaci+Valladolid" }
+            ]}
+          ]
+        },
+        {
+          date: "2027-01-13",
+          slots: [
+            { label: "Celestún — Flamingos 🦩", items: [
+              { name: "Celestún Biosphärenreservat — Flamingo-Bootsfahrt (Eintritt + Boot: ~350 MXN/P)", type: "sight", price: { mxn: 350, eur: 17 }, gratis: false, googleMapsUrl: "https://maps.google.com/?q=Celestun+Flamingos+Yucatan" },
+              { name: "Dez/Jan = beste Zeit für Flamingos (Wintergäste aus Nordamerika)", type: "note", googleMapsUrl: "" }
+            ]},
+            { label: "Mittagsschlaf", items: [] },
+            { label: "Celestún Strand", items: [
+              { name: "Playa Celestún — ruhiger Fischerort, wenig Touristen", type: "sight", gratis: true, googleMapsUrl: "" }
+            ]}
+          ]
+        },
+        {
+          date: "2027-01-16",
+          slots: [
+            { label: "Uxmal", items: [
+              { name: "Uxmal — Puuc-Maya-Architektur (Eintritt: ~600 MXN, Kinder gratis)", type: "sight", price: { mxn: 600, eur: 29 }, gratis: false, googleMapsUrl: "https://maps.google.com/?q=Uxmal+Yucatan" }
+            ]},
+            { label: "Mittagsschlaf", items: [] },
+            { label: "Ruta Puuc", items: [
+              { name: "Kabah — kurzer Stopp Regengott-Codz-Poop-Palast", type: "sight", googleMapsUrl: "https://maps.google.com/?q=Kabah+Yucatan" }
+            ]}
+          ]
+        },
+        {
+          date: "2027-01-17",
+          slots: [
+            { label: "Anreise Isla Holbox 🏝", items: [
+              { name: "Fähre ab Chiquilá → Holbox (20 Min, ~30 MXN)", type: "transport", googleMapsUrl: "https://maps.google.com/?q=Chiquila+ferry+Holbox+Mexico" },
+              { name: "Isla Holbox — autofreie Insel, Golfkarren statt Autos", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=Isla+Holbox+Mexico" }
+            ]},
+            { label: "Mittagsschlaf", items: [] },
+            { label: "Strand + Sonnenuntergang", items: [
+              { name: "Playa Norte Holbox — flaches karibisches Wasser, kinderfreundlich", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=Playa+Norte+Holbox" },
+              { name: "Biolumineszenz-Tour (nachts, optional ab €20/P)", type: "activity", googleMapsUrl: "" }
+            ]}
+          ]
+        },
+        {
+          date: "2027-01-20",
+          slots: [
+            { label: "Río Lagartos + Las Coloradas", items: [
+              { name: "Río Lagartos Biosphärenreservat — Flamingos + Krokodile (Boot: ~500 MXN/P)", type: "sight", price: { mxn: 500, eur: 24 }, gratis: false, googleMapsUrl: "https://maps.google.com/?q=Rio+Lagartos+Yucatan" },
+              { name: "Las Coloradas — pinker Salzsee (gratis, Instagram-Spot)", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=Las+Coloradas+Yucatan" }
+            ]},
+            { label: "Mittagsschlaf", items: [] },
+            { label: "Izamal", items: [
+              { name: "Izamal — gelbe Stadt, Kloster auf Maya-Pyramide (gratis)", type: "sight", gratis: true, googleMapsUrl: "https://maps.google.com/?q=Izamal+Yucatan" }
+            ]}
+          ]
+        }
+      ]
+    },
+    {
+      id: 6,
+      name: "Rückreise CDMX",
+      emoji: "✈",
+      color: "#06B6D4",
+      flightIn: { route: "CUN → MEX", date: "28. Jan", type: "inland" },
+      flightOut: { route: "MEX → VIE", date: "29. Jan", type: "international" },
+      startDate: "2027-01-28",
+      endDate:   "2027-01-29",
+      nights: 1,
+      base: { lat: 19.4326, lng: -99.1332, name: "Mexico City (Abflug)" },
+      avgTempC: { min: 8, max: 21 },
+      weatherNote: "Kühl und trocken, Abflug-Tag",
+      highlights: ["Xochimilco (optional)", "Letztes Abendessen Mexiko"],
+      buggyNote: "Uber zum Flughafen, 2h vorher einplanen",
+      seismikLevel: "hoch",
+      krimLevel: "erhoht",
+      days: [
+        {
+          date: "2027-01-28",
+          slots: [
+            { label: "Letzter Tag", items: [
+              { name: "Xochimilco — Trajineras (Kanäle, optional), Kinder lieben es", type: "sight", gratis: false, googleMapsUrl: "https://maps.google.com/?q=Xochimilco+Mexico+City" }
+            ]},
+            { label: "Mittagsschlaf", items: [] },
+            { label: "Abschied", items: [
+              { name: "Letztes Abendessen im veganen Restaurant CDMX", type: "food", googleMapsUrl: "" }
+            ]}
+          ]
+        },
+        {
+          date: "2027-01-29",
+          slots: [
+            { label: "Abflug", items: [
+              { name: "Flug MEX → FRA → VIE", type: "transport", googleMapsUrl: "https://maps.google.com/?q=Aeropuerto+Internacional+Ciudad+de+Mexico" }
+            ]},
+            { label: "", items: [] },
+            { label: "", items: [] }
+          ]
+        }
+      ]
+    }
+  ],
+
+  // ============================================================
+  // sights — Alle Karten-Pins (Leaflet)
+  // lat/lng = WGS84, type: 'sight' | 'daytrip'
+  // ============================================================
+  sights: [
+    // Phase 1 — Mexico City
+    { id: "s001", phaseId: 1, name: "Zócalo + Catedral Metropolitana", lat: 19.4326, lng: -99.1332, type: "sight",   price: { mxn: 0, eur: 0 }, gratis: true,  buggyFriendly: true,  googleMapsUrl: "https://maps.google.com/?q=Zocalo+Mexico+City", tip: "Morgens besser, weniger heiß" },
+    { id: "s002", phaseId: 1, name: "Teotihuacán — Sonnenpyramide",   lat: 19.6925, lng: -98.8437, type: "daytrip", price: { mxn: 210, eur: 10 }, gratis: false, buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Teotihuacan+Pyramid+of+the+Sun", tip: "08:00 öffnet, vor 10:00 ankommen" },
+    { id: "s003", phaseId: 1, name: "Xochimilco Kanäle",               lat: 19.2573, lng: -99.1027, type: "daytrip", price: { mxn: 150, eur: 7 },  gratis: false, buggyFriendly: true,  googleMapsUrl: "https://maps.google.com/?q=Xochimilco+Mexico+City", tip: "Trajinera-Boot mieten, Kinder lieben es" },
+    { id: "s004", phaseId: 1, name: "Bosque de Chapultepec",           lat: 19.4202, lng: -99.1928, type: "sight",   price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: true,  googleMapsUrl: "https://maps.google.com/?q=Bosque+de+Chapultepec+Mexico+City", tip: "Zoológico de Chapultepec gratis Di–Do" },
+
+    // Phase 2 — Oaxaca
+    { id: "s010", phaseId: 2, name: "Monte Albán",                     lat: 17.0444, lng: -96.7681, type: "daytrip", price: { mxn: 210, eur: 10 }, gratis: false, buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Monte+Alban+Oaxaca", tip: "Früh starten (08:00), 9 km von Oaxaca" },
+    { id: "s011", phaseId: 2, name: "Mitla — Griechische Mosaike",     lat: 16.9214, lng: -96.4004, type: "daytrip", price: { mxn: 200, eur: 10 }, gratis: false, buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Mitla+Oaxaca", tip: "Mit Yagul kombinierbar, 46 km von Oaxaca" },
+    { id: "s012", phaseId: 2, name: "Hierve el Agua",                  lat: 16.8665, lng: -96.2776, type: "daytrip", price: { mxn: 50, eur: 2.5 }, gratis: false, buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Hierve+el+Agua+Oaxaca", tip: "Versteinerte Wasserfälle, Eintritt 50 MXN, Schotterpiste am Ende" },
+    { id: "s013", phaseId: 2, name: "Tlacolula — Sonntagsmarkt",       lat: 16.9552, lng: -96.4595, type: "daytrip", price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: true,  googleMapsUrl: "https://maps.google.com/?q=Tlacolula+de+Matamoros+Oaxaca", tip: "Sonntags, ab 08:00, authentischer Zapoteken-Markt" },
+    { id: "s014", phaseId: 2, name: "Ocotlán — Freitagsmarkt",        lat: 16.7976, lng: -96.6782, type: "daytrip", price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: true,  googleMapsUrl: "https://maps.google.com/?q=Ocotlan+de+Morelos+Oaxaca", tip: "Freitags, Textilien + Keramik" },
+    { id: "s015", phaseId: 2, name: "Teotitlán del Valle — Teppiche",  lat: 17.0325, lng: -96.5156, type: "daytrip", price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: true,  googleMapsUrl: "https://maps.google.com/?q=Teotitlan+del+Valle+Oaxaca", tip: "Handgewebte Zapoteken-Teppiche, Workshops" },
+    { id: "s016", phaseId: 2, name: "Santo Domingo Kirche + Kulturzentrum", lat: 17.0670, lng: -96.7261, type: "sight", price: { mxn: 0, eur: 0 }, gratis: true, buggyFriendly: true, googleMapsUrl: "https://maps.google.com/?q=Santo+Domingo+Oaxaca", tip: "Barockkirche + Garten, gratis" },
+    { id: "s017", phaseId: 2, name: "Yagul — Zapoteken-Ruinen",        lat: 16.9643, lng: -96.4560, type: "daytrip", price: { mxn: 85, eur: 4 },  gratis: false, buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Yagul+Oaxaca", tip: "Wenig Touristen, Kaktuslandschaft" },
+    { id: "s019", phaseId: 2, name: "El Árbol del Tule 🌳",               lat: 17.0469, lng: -96.6361, type: "daytrip", price: { mxn: 20, eur: 1 },  gratis: false, buggyFriendly: true,  googleMapsUrl: "https://maps.google.com/?q=El+Arbol+del+Tule+Oaxaca", tip: "Breitester Baum der Welt (Stammumfang 58m), UNESCO-Kandidat. 9km von Oaxaca, 15min — ideal kombiniert mit Mitla-Tour." },
+    { id: "s025", phaseId: 2, name: "San Bartolo Coyotepec 🏺",          lat: 16.9848, lng: -96.7111, type: "daytrip", price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: true,  googleMapsUrl: "https://maps.google.com/?q=San+Bartolo+Coyotepec+Oaxaca", tip: "Dorf der schwarzen Keramik (Barro Negro). Töpferfamilien direkt besuchen, günstigere Preise als in Oaxaca-Stadt." },
+    { id: "s026", phaseId: 2, name: "San Martín Tilcajete 🎨",            lat: 16.9667, lng: -96.7500, type: "daytrip", price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: true,  googleMapsUrl: "https://maps.google.com/?q=San+Martin+Tilcajete+Oaxaca", tip: "Alebrije-Dorf (bunte Holzfabelwesen), Familienwerkstätten. Nicht mit Arrazola verwechseln — andere Familien, andere Stile." },
+    { id: "s027", phaseId: 2, name: "Sierra Norte — Pueblos Mancomunados", lat: 17.3167, lng: -96.4667, type: "daytrip", price: { mxn: 150, eur: 7 }, gratis: false, buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Pueblos+Mancomunados+Oaxaca", tip: "8 indigene Bergdörfer auf 3.000m, Ökotourismus. Wandern, Vogelbeobachtung. Dez = kühl, klare Luft. 1,5h von Oaxaca." },
+    { id: "s018", phaseId: 2, name: "Arrazola — Alebrijes Werkstätten", lat: 17.0057, lng: -96.7733, type: "daytrip", price: { mxn: 0, eur: 0 },  gratis: true,  buggyFriendly: true,  googleMapsUrl: "https://maps.google.com/?q=Arrazola+Oaxaca", tip: "Holzfiguren direkt bei Familien kaufen" },
+
+    // Phase 3 — Sierra Sur
+    { id: "s050", phaseId: 3, name: "San José del Pacífico ⛰",        lat: 16.4833, lng: -96.8167, type: "sight",   price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=San+Jose+del+Pacifico+Oaxaca", tip: "2.480m Höhe, Nebelwald, Cabañas. Kalt nachts — Schichten einpacken." },
+    { id: "s051", phaseId: 3, name: "San Miguel Suchixtepec 🌲",       lat: 16.0793, lng: -96.4618, type: "daytrip", price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=San+Miguel+Suchixtepec+Oaxaca", tip: "Cascada Río Gurajolais + Cerro de Zimlaltepec, kaum Touristen" },
+    { id: "s052", phaseId: 3, name: "Miahuatlán de Porfirio Díaz",     lat: 16.3357, lng: -96.5982, type: "sight",   price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: true,  googleMapsUrl: "https://maps.google.com/?q=Miahuatlan+de+Porfirio+Diaz+Oaxaca", tip: "Zapoteken-Marktstadt (1.660m), lokale Küche, guter Zwischenstopp" },
+    { id: "s053", phaseId: 3, name: "Pluma Hidalgo ☕",                lat: 15.9150, lng: -96.7220, type: "daytrip", price: { mxn: 200, eur: 10 }, gratis: false, buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Pluma+Hidalgo+Oaxaca", tip: "Erste Kaffeeplantage Oaxacas — Führung + Degustation, Wasserfälle, Vogelbeobachtung" },
+    { id: "s054", phaseId: 3, name: "San Agustinillo 🏖",              lat: 15.6839, lng: -96.8124, type: "sight",   price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: true,  googleMapsUrl: "https://maps.google.com/?q=San+Agustinillo+Oaxaca", tip: "Ruhigstes Fischerdorf, 2km Sandstrand, geschützte Bucht, grüne Flagge (sicher schwimmen)" },
+    { id: "s055", phaseId: 3, name: "Centro Mexicano de la Tortuga 🐢", lat: 15.6890, lng: -96.8346, type: "sight",  price: { mxn: 70, eur: 3 },  gratis: false, buggyFriendly: true,  googleMapsUrl: "https://maps.google.com/?q=Centro+Mexicano+de+la+Tortuga+Mazunte", tip: "Meeresschildkröten hautnah, Dez/Jan = Release-Saison, kindgerecht" },
+    { id: "s057", phaseId: 3, name: "Zipolite 🏖",                       lat: 15.6675, lng: -96.8564, type: "sight",   price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Zipolite+Oaxaca", tip: "Mexikos einziger offiziell anerkannter FKK-Strand. Starke Wellen — nicht zum Schwimmen mit Kind, aber sehenswert." },
+    { id: "s058", phaseId: 3, name: "Puerto Escondido 🌊",               lat: 15.8570, lng: -97.0706, type: "daytrip", price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Puerto+Escondido+Oaxaca", tip: "Surfer-Hotspot, Playa Zicatela = weltberühmte Wellen. Mit Kind: Playa Principal ruhiger. 1,5h westlich von San Agustinillo." },
+    { id: "s059", phaseId: 3, name: "Chacahua 🐊",                       lat: 15.9733, lng: -97.6669, type: "daytrip", price: { mxn: 200, eur: 10 }, gratis: false, buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Chacahua+Oaxaca", tip: "Nur per Boot erreichbar. Afro-mexikanische Gemeinschaft, biolumineszente Lagune, Krokodile. Dez/Jan = bestes Biolumineszenz-Fenster." },
+    { id: "s056", phaseId: 3, name: "Punta Cometa + Playa Rinconcito", lat: 15.6844, lng: -96.8291, type: "sight",   price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Punta+Cometa+Mazunte", tip: "Bester Sonnenuntergang der Region. Rinconcito = familiärster Strand, geschützt durch Halbinsel." },
+    // Phase 4 — Huatulco
+    { id: "s020", phaseId: 4, name: "Playa Maguey",                    lat: 15.7527, lng: -96.1248, type: "sight",   price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: true,  googleMapsUrl: "https://maps.google.com/?q=Playa+Maguey+Huatulco", tip: "Flaches Wasser, ideal für Kleinkind" },
+    { id: "s021", phaseId: 4, name: "Playa La India",                  lat: 15.7535, lng: -96.0914, type: "sight",   price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Playa+La+India+Huatulco", tip: "Ruhigste Bucht, nur per Boot erreichbar" },
+    { id: "s022", phaseId: 4, name: "La Ventanilla — Schildkröten 🐢", lat: 15.8631, lng: -96.7049, type: "daytrip", price: { mxn: 80, eur: 4 },  gratis: false, buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=La+Ventanilla+Oaxaca", tip: "Release nach Sonnenuntergang, Kokosnuss-Schale verwenden" },
+    { id: "s023", phaseId: 4, name: "Buckelwal-Beobachtung 🐋",        lat: 15.7597, lng: -96.1358, type: "activity",price: { mxn: 700, eur: 38 }, gratis: false, buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Santa+Cruz+Huatulco+pier", tip: "Morgens buchen, größtes Boot wählen, Vomex mitnehmen" },
+    { id: "s024", phaseId: 4, name: "Kaffeefarmen Llano Grande",        lat: 15.9502, lng: -96.3200, type: "daytrip", price: { mxn: 1400, eur: 70 }, gratis: false, buggyFriendly: true, googleMapsUrl: "https://maps.google.com/?q=Llano+Grande+Huatulco", tip: "Via Viator buchbar, ~70–100 USD/P" },
+
+    // Phase 4 — Yucatán
+    { id: "s030", phaseId: 5, name: "Chichén Itzá 🏛",                  lat: 20.6843, lng: -88.5678, type: "daytrip", price: { mxn: 680, eur: 33 }, gratis: false, buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Chichen+Itza+Yucatan", tip: "Früh (08:00), vor 10:00 vor Ort, unerträglich heiß ab 11:00" },
+    { id: "s031", phaseId: 5, name: "Uxmal 🏛",                          lat: 20.3595, lng: -89.7713, type: "daytrip", price: { mxn: 600, eur: 29 }, gratis: false, buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Uxmal+Yucatan", tip: "Weniger Touristen als Chichén Itzá, beeindruckende Pyramide" },
+    { id: "s032", phaseId: 5, name: "Cenote Zaci Valladolid",           lat: 20.6892, lng: -88.2044, type: "sight",   price: { mxn: 60, eur: 3 },  gratis: false, buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Cenote+Zaci+Valladolid", tip: "In der Stadt, 9:00–17:30, Schwimmweste Pflicht" },
+    { id: "s033", phaseId: 5, name: "Celestún — Flamingos 🦩",           lat: 20.8681, lng: -90.3970, type: "daytrip", price: { mxn: 350, eur: 17 }, gratis: false, buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Celestun+Biosphere+Reserve", tip: "Dez/Jan = beste Zeit, morgens buchen" },
+    { id: "s034", phaseId: 5, name: "Río Lagartos — Flamingos + Krokodile", lat: 21.6061, lng: -88.1625, type: "daytrip", price: { mxn: 500, eur: 24 }, gratis: false, buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Rio+Lagartos+Yucatan", tip: "3h Boot-Tour, Krokodile + rosa Wasser (Las Coloradas)" },
+    { id: "s035", phaseId: 5, name: "Las Coloradas — Pinker See",       lat: 21.5836, lng: -88.0239, type: "daytrip", price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Las+Coloradas+Yucatan", tip: "Bizarre Farbe durch Salzlake + Algen, gratis" },
+    { id: "s036", phaseId: 5, name: "Izamal — Gelbe Stadt",             lat: 20.9296, lng: -89.0158, type: "daytrip", price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: true,  googleMapsUrl: "https://maps.google.com/?q=Izamal+Yucatan", tip: "Kloster auf Maya-Pyramide, alles gelb angestrichen, sehr fotogen" },
+    { id: "s037", phaseId: 5, name: "Plaza Grande Mérida",              lat: 20.9674, lng: -89.6235, type: "sight",   price: { mxn: 0, eur: 0 },   gratis: true,  buggyFriendly: true,  googleMapsUrl: "https://maps.google.com/?q=Plaza+Grande+Merida", tip: "Abends sehr lebendig, Familien-freundlich" },
+    { id: "s038", phaseId: 5, name: "Cenote Azul Bacalar 🏊",           lat: 18.7122, lng: -88.3847, type: "daytrip", price: { mxn: 80, eur: 4 },  gratis: false, buggyFriendly: false, googleMapsUrl: "https://maps.google.com/?q=Cenote+Azul+Bacalar", tip: "BESTES Cenote für 2-Jährige: flache Bereiche, Kind kann stehen" },
+    { id: "s039", phaseId: 5, name: "Laguna Bacalar 💎 (Quelle: backpackinghacks.de)", lat: 18.6712, lng: -88.3964, type: "daytrip", price: { mxn: 0, eur: 0 }, gratis: true, buggyFriendly: true, googleMapsUrl: "https://maps.google.com/?q=Laguna+Bacalar+Mexico", tip: "Türkisfarbener 'See der 7 Farben', 40 km lang. Von backpackinghacks.de explizit als Highlight empfohlen. 2h südlich von Tulum." },
+    { id: "s041", phaseId: 5, name: "Isla Holbox 🏝", lat: 21.5253, lng: -87.3770, type: "sight", price: { mxn: 0, eur: 0 }, gratis: true, buggyFriendly: true, googleMapsUrl: "https://maps.google.com/?q=Isla+Holbox+Mexico", tip: "Autofreie Insel NW Yucatán. 2-3 Tage. Fähre ab Chiquilá (20 Min). Playa Norte = flaches Wasser ideal für Kind. Biolumineszenz-Tour nachts." },
+
+    // Phase 5 — CDMX Rückreise
+    { id: "s040", phaseId: 6, name: "Xochimilco Trajineras",            lat: 19.2573, lng: -99.1027, type: "sight",   price: { mxn: 150, eur: 7 }, gratis: false, buggyFriendly: true, googleMapsUrl: "https://maps.google.com/?q=Xochimilco+Mexico+City", tip: "Letzter Urlaubstag, Kinder lieben die bunten Boote" }
+  ],
+
+  // ============================================================
+  // restaurants — Vegetarische + vegane Restaurants pro Phase
+  // ============================================================
+  restaurants: [
+    // Phase 2 — Oaxaca
+    { id: "r001", phaseId: 2, name: "Herbívora", type: "vegan",        veganSymbol: true,  pricePerPerson: { mxn: 150, eur: 7 },  note: "Beste vegane Tacos in ganz Mexiko ⭐ — Pflichtbesuch",                                           googleMapsUrl: "https://www.google.com/maps/search/Herbivora+Oaxaca+Mexico" },
+    { id: "r002", phaseId: 2, name: "Viriditas",  type: "vegan",        veganSymbol: true,  pricePerPerson: { mxn: 180, eur: 9 },  note: "Veganes japanisches Restaurant, veganes Sushi in Oaxaca",                                        googleMapsUrl: "https://www.google.com/maps/search/Viriditas+Oaxaca+Mexico" },
+    { id: "r003", phaseId: 2, name: "Levadura de Olla", type: "vegetarisch", veganSymbol: false, pricePerPerson: { mxn: 160, eur: 8 }, note: "Gemüse-fokussiert, Tepache, Agua de Taberna — oaxacanische Küche modern",                  googleMapsUrl: "https://www.google.com/maps/search/Levadura+de+Olla+Oaxaca+Mexico" },
+    { id: "r004", phaseId: 2, name: "Etno Food",  type: "vegan",        veganSymbol: true,  pricePerPerson: { mxn: 170, eur: 8 },  note: "Vegane Fusion, Kochkurse auf Anfrage",                                                           googleMapsUrl: "https://www.google.com/maps/search/Etno+Food+Oaxaca+Mexico" },
+    { id: "r005", phaseId: 2, name: "Los Muchitos", type: "vegan",      veganSymbol: true,  pricePerPerson: { mxn: 90, eur: 4 },   note: "Vegane Tlayudas, Sopa Azteca — sehr günstig",                                                   googleMapsUrl: "https://www.google.com/maps/search/Los+Muchitos+Oaxaca+Mexico" },
+    { id: "r006", phaseId: 2, name: "Aguacate Veggie Bar", type: "vegan", veganSymbol: true, pricePerPerson: { mxn: 130, eur: 6 }, note: "Buddha Bowls, Quinoa, nur Mittagsbetrieb",                                                       googleMapsUrl: "https://www.google.com/maps/search/Aguacate+Veggie+Bar+Oaxaca+Mexico" },
+    { id: "r007", phaseId: 2, name: "Trigo Verde", type: "vegan",       veganSymbol: true,  pricePerPerson: { mxn: 70, eur: 3 },   note: "Günstigstes veganes Mittagsmenü in Oaxaca — Menü 60–100 Pesos (~€2–3)",                         googleMapsUrl: "https://www.google.com/maps/search/Trigo+Verde+Oaxaca+Mexico" },
+    { id: "r008", phaseId: 2, name: "Las 15 Letras", type: "vegetarisch", veganSymbol: false, pricePerPerson: { mxn: 140, eur: 7 }, note: "Traditionelle oaxacanische Küche, veggie-freundlich",                                          googleMapsUrl: "https://www.google.com/maps/search/Las+15+Letras+Oaxaca+Mexico" },
+    { id: "r009", phaseId: 2, name: "Pochote Biomarkt", type: "vegan",  veganSymbol: true,  pricePerPerson: { mxn: 60, eur: 3 },   note: "Fr + Sa Morgen — Bio direkt vom Erzeuger, Street Food, Frühstück",                              googleMapsUrl: "https://www.google.com/maps/search/Pochote+Mercado+Organico+Oaxaca" },
+
+    // Phase 3 — Sierra Sur
+    { id: "r019", phaseId: 3, name: "Umami San Agustinillo",   type: "vegetarisch", veganSymbol: false, pricePerPerson: { mxn: 120, eur: 6 }, note: "Vegetarische Küche direkt am Strand, Säfte, guter Kaffee ⭐ — Pflichtbesuch in San Agustinillo", googleMapsUrl: "https://maps.google.com/?q=Umami+San+Agustinillo+Oaxaca" },
+    { id: "r020", phaseId: 3, name: "Palapa-Restaurants Miahuatlán", type: "veg-option", veganSymbol: false, pricePerPerson: { mxn: 80, eur: 4 }, note: "Marktküche: Tlayudas, Frijoles de Olla, Enfrijoladas — immer ohne Fleisch bestellbar", googleMapsUrl: "https://maps.google.com/?q=Miahuatlan+de+Porfirio+Diaz+Oaxaca" },
+    // Phase 4 — Huatulco
+    { id: "r010", phaseId: 4, name: "Restaurante Don Porfirio", type: "veg-option", veganSymbol: false, pricePerPerson: { mxn: 200, eur: 10 }, note: "Gut für Familien, veggie-Optionen vorhanden, schöne Aussicht",                     googleMapsUrl: "https://www.google.com/maps/search/restaurante+vegetariano+Huatulco" },
+    { id: "r011", phaseId: 4, name: "Mercado Crucecita", type: "vegetarisch", veganSymbol: false, pricePerPerson: { mxn: 80, eur: 4 }, note: "Lokaler Markt, Tlayudas + Enfrijoladas — traditionell oaxacanisch",                       googleMapsUrl: "https://www.google.com/maps/search/Mercado+Crucecita+Huatulco" },
+    { id: "r012", phaseId: 4, name: "Nopal + Verduras überall", type: "vegetarisch", veganSymbol: false, pricePerPerson: { mxn: 60, eur: 3 }, note: "Nopal-Salat, Frijoles de Olla, Enfrijoladas — überall erhältlich ohne Fleisch", googleMapsUrl: "" },
+
+    // Phase 4 — Yucatán
+    { id: "r013", phaseId: 5, name: "La Chaya Maya Mérida", type: "veg-option", veganSymbol: false, pricePerPerson: { mxn: 180, eur: 9 }, note: "Yucatán-Klassiker, Papadzules (vegane Tacos in Kürbissauce) + Salbei-Lemonade ⭐",    googleMapsUrl: "https://www.google.com/maps/search/La+Chaya+Maya+Merida" },
+    { id: "r014", phaseId: 5, name: "Naturalia Mérida", type: "vegan",    veganSymbol: true,  pricePerPerson: { mxn: 150, eur: 7 },  note: "Vegane Küche in Mérida, Vollkorn + frische Zutaten",                                         googleMapsUrl: "https://www.google.com/maps/search/Naturalia+Merida+vegetariano" },
+    { id: "r015", phaseId: 5, name: "Mercado Lucas de Gálvez", type: "vegetarisch", veganSymbol: false, pricePerPerson: { mxn: 70, eur: 3 }, note: "Größter Markt Méridans, Papadzules + Panuchos vegetarisch zum Frühstück",         googleMapsUrl: "https://www.google.com/maps/search/Mercado+Lucas+de+Galvez+Merida" },
+    { id: "r016", phaseId: 5, name: "Cenote-Region: Pibil-Küche", type: "veg-option", veganSymbol: false, pricePerPerson: { mxn: 100, eur: 5 }, note: "Valladolid: Longaniza-Gebiet — immer nach Vegetarisch fragen, Markt-Comidas anbietbar", googleMapsUrl: "" },
+
+    // Phase 1 + 5 — Mexico City
+    { id: "r017", phaseId: 1, name: "Por Siempre Vegana Taqueria", type: "vegan", veganSymbol: true, pricePerPerson: { mxn: 120, eur: 6 }, note: "CDMX — Berühmteste vegane Taqueria der Hauptstadt",                                  googleMapsUrl: "https://www.google.com/maps/search/Por+Siempre+Vegana+Taqueria+Mexico+City" },
+    { id: "r018", phaseId: 1, name: "Vegetal Taqueria",              type: "vegan", veganSymbol: true, pricePerPerson: { mxn: 110, eur: 5 }, note: "CDMX — Günstig, lecker, zentral in Colonia Roma",                                   googleMapsUrl: "https://www.google.com/maps/search/Vegetal+Taqueria+Mexico+City" }
+  ],
+
+  // ============================================================
+  // videos — 20 kuratierte YouTube-Videos
+  // ============================================================
+  videos: [
+    { id: "vid-001", title: "La Ventanilla — Schildkröten mit Kind",              youtubeId: "w38-fDFopdc",     category: "natur",    phaseIds: [4] },
+    { id: "vid-002", title: "Oaxaca Vegan Food Tour — beste vegane Tacos",        youtubeId: "b_CrhWZrVAY",     category: "food",     phaseIds: [2] },
+    { id: "vid-003", title: "Whale Watching Huatulco — Buckelwale",               youtubeId: "2OXW9egVTjU",     category: "natur",    phaseIds: [4] },
+    { id: "vid-004", title: "Worldschooling in Oaxaca with Kids",                 youtubeId: "mBSMpT_WZjs",     category: "familie",  phaseIds: [2] },
+    { id: "vid-005", title: "Monte Albán komplett Guide",                          youtubeId: "JCuXEgfg32o",     category: "kultur",   phaseIds: [2] },
+    { id: "vid-006", title: "Cenoten Yucatán mit Kleinkind",                       youtubeId: "xeXdwNOrsfM",     category: "familie",  phaseIds: [5] },
+    { id: "vid-007", title: "Chichén Itzá — Weltenwunder Besuch Guide",            youtubeId: "Mo4YGLxaASI",     category: "kultur",   phaseIds: [5] },
+    { id: "vid-008", title: "Oaxaca Wochenmärkte — Zapoteken-Kultur",              youtubeId: "_tMaflU--xA",     category: "kultur",   phaseIds: [2] },
+    { id: "vid-009", title: "Mérida Yucatán — La Bella Blanca",                   youtubeId: "JxJWYhqRHEQ",     category: "kultur",   phaseIds: [5] },
+    { id: "vid-010", title: "Flamingos Celestún Biosphärenreservat",               youtubeId: "BxhGev-hP1A",     category: "natur",    phaseIds: [5] },
+    { id: "vid-011", title: "Oaxaca | Ancient Heart Still Beats | 4K Documentary", youtubeId: "pZ-xcNLFV7k",    category: "kultur",   phaseIds: [2,3] },
+    { id: "vid-012", title: "Mexiko Roadtrip: Von Veracruz in die Berge von Oaxaca", youtubeId: "1VYBTVhmL-A",    category: "kultur",   phaseIds: [2,3] },
+    { id: "vid-013", title: "Teotihuacán — Sonnenpyramide Besuch",                 youtubeId: "PLACEHOLDER-013", category: "kultur",   phaseIds: [1] },
+    { id: "vid-014", title: "Vegetarisch in Mexiko — Geheimtipps",                 youtubeId: "PLACEHOLDER-014", category: "food",     phaseIds: [2,3,4] },
+    { id: "vid-015", title: "Uxmal — Puuc Maya Architektur Guide",                  youtubeId: "PLACEHOLDER-015", category: "kultur",   phaseIds: [5] },
+    { id: "vid-016", title: "Xochimilco Mexiko City mit Kindern",                   youtubeId: "PLACEHOLDER-016", category: "familie",  phaseIds: [1,6] },
+    { id: "vid-017", title: "Oaxaca — Alebrije Holzfiguren Kunsthandwerk",          youtubeId: "PLACEHOLDER-017", category: "kultur",   phaseIds: [2] },
+    { id: "vid-018", title: "Celestún Flamingos Boot-Tour kompletter Guide",         youtubeId: "PLACEHOLDER-018", category: "natur",    phaseIds: [5] },
+    { id: "vid-019", title: "Huatulco — Mexikos entspannteste Küste",               youtubeId: "PLACEHOLDER-019", category: "strand",   phaseIds: [4] },
+    { id: "vid-020", title: "Yucatán mit Mietwagen — Ruta Puuc + Maya Ruinen",     youtubeId: "PLACEHOLDER-020", category: "kultur",   phaseIds: [5] }
+  ],
+
+  // ============================================================
+  // booking — Unterkunfts-Links pro Phase
+  // ============================================================
+  booking: [
+    {
+      phaseId: 1,
+      region: "Mexico City (CDMX)",
+      checkIn:  "2026-12-01",
+      checkOut: "2026-12-03",
+      nights: 2,
+      earlyBook: true,
+      bookingUrl: "https://www.booking.com/searchresults.de.html?ss=Mexico+City&checkin=2026-12-01&checkout=2026-12-03&group_adults=2&group_children=1&age=2",
+      airbnbUrl:  "https://www.airbnb.com/s/Mexico-City/homes?checkin=2026-12-01&checkout=2026-12-03&adults=2&children=1",
+      criteria: { notes: "Zentral (Colonia Roma / Condesa / Centro Histórico), sicher, Uber-freundlich" },
+      exampleHotels: [
+        { name: "Hotel Carlota (Condesa)", priceEur: 140, url: "https://www.booking.com/hotel/mx/carlota.de.html" },
+        { name: "Downtown Mexico (Centro)", priceEur: 120, url: "https://www.booking.com/hotel/mx/downtown-mexico.de.html" }
+      ]
+    },
+    {
+      phaseId: 2,
+      region: "Oaxaca Ciudad",
+      checkIn:  "2026-12-03",
+      checkOut: "2026-12-19",
+      nights: 16,
+      earlyBook: true,
+      bookingUrl: "https://www.booking.com/searchresults.de.html?ss=Oaxaca+City&checkin=2026-12-03&checkout=2026-12-19&group_adults=2&group_children=1&age=2",
+      airbnbUrl:  "https://www.airbnb.com/s/Oaxaca-de-Juarez/homes?checkin=2026-12-03&checkout=2026-12-19&adults=2&children=1",
+      criteria: { notes: "Jalatlaco-Viertel ideal, Parkplatz Pflicht (Mietwagen), ⚠️ Dezember = Hochsaison → früh buchen!" },
+      exampleHotels: [
+        { name: "Hotel Escondido Oaxaca", priceEur: 110, url: "https://www.booking.com/hotel/mx/escondido-oaxaca.de.html" },
+        { name: "Hotel con Corazón", priceEur: 90, url: "https://www.booking.com/hotel/mx/con-corazon-oaxaca.de.html" },
+        { name: "Quinta Real Oaxaca", priceEur: 180, url: "https://www.booking.com/hotel/mx/quinta-real-oaxaca.de.html" }
+      ]
+    },
+    {
+      phaseId: 3,
+      region: "Sierra Sur (3 Stops)",
+      checkIn:  "2026-12-19",
+      checkOut: "2026-12-25",
+      nights: 6,
+      earlyBook: true,
+      bookingUrl: "https://www.booking.com/searchresults.de.html?ss=San+Jose+del+Pacifico+Oaxaca&checkin=2026-12-20&checkout=2026-12-22&group_adults=2&group_children=1&age=2",
+      airbnbUrl:  "https://www.airbnb.com/s/San-Agustinillo/homes?checkin=2026-12-22&checkout=2026-12-25&adults=2&children=1",
+      criteria: { notes: "3 Stops: Miahuatlán 1N (19. Dez) → San José del Pacífico 2N (20.–21. Dez) → San Agustinillo 3N (22.–24. Dez). Cabañas in San José, kleines Hotel/Bungalow in San Agustinillo." },
+      exampleHotels: [
+        { name: "Cabañas Camino al Cielo (San José del Pacífico)", priceEur: 45, url: "https://www.booking.com/hotel/mx/san-jose-del-pacifico-camino-al-cielo.html" },
+        { name: "Zazil Retreat (San Agustinillo/Mazunte)", priceEur: 90, url: "https://zazilretreat.com/accommodations/" },
+        { name: "Casa Yute Boutique Hotel (San Agustinillo)", priceEur: 100, url: "https://www.tripadvisor.com/Hotels-g674764-zff4-San_Agustinillo_Southern_Mexico-Hotels.html" }
+      ]
+    },
+    {
+      phaseId: 4,
+      region: "Huatulco",
+      checkIn:  "2026-12-25",
+      checkOut: "2027-01-07",
+      nights: 13,
+      earlyBook: true,
+      bookingUrl: "https://www.booking.com/searchresults.de.html?ss=Huatulco&checkin=2026-12-25&checkout=2027-01-07&group_adults=2&group_children=1&age=2",
+      airbnbUrl:  "https://www.airbnb.com/s/Huatulco/homes?checkin=2026-12-25&checkout=2027-01-07&adults=2&children=1",
+      criteria: { notes: "Crucecita oder La Crucecita für Markt-Nähe, Pool für Kind gut, ⚠️ Silvester = höchste Preise!" },
+      exampleHotels: [
+        { name: "Hotel Mezcalito Resort", priceEur: 120, url: "https://www.booking.com/hotel/mx/mezcalito-resort-huatulco.de.html" },
+        { name: "Vivo Resorts Huatulco", priceEur: 200, url: "https://www.booking.com/hotel/mx/vivo-resorts.de.html" }
+      ]
+    },
+    {
+      phaseId: 5,
+      region: "Yucatán (Mérida Basis)",
+      checkIn:  "2027-01-07",
+      checkOut: "2027-01-28",
+      nights: 21,
+      earlyBook: false,
+      bookingUrl: "https://www.booking.com/searchresults.de.html?ss=Merida+Mexico&checkin=2027-01-07&checkout=2027-01-28&group_adults=2&group_children=1&age=2",
+      airbnbUrl:  "https://www.airbnb.com/s/Merida--Yucatan/homes?checkin=2027-01-07&checkout=2027-01-28&adults=2&children=1",
+      criteria: { notes: "Mérida Centro als Basis, Parkplatz wichtig, evtl. Split: Valladolid + Bacalar als Zwischenstopps" },
+      exampleHotels: [
+        { name: "Hotel Luz en Yucatan (Mérida)", priceEur: 80, url: "https://www.booking.com/hotel/mx/luz-en-yucatan.de.html" },
+        { name: "Hacienda Xcanatun", priceEur: 220, url: "https://www.booking.com/hotel/mx/hacienda-xcanatun.de.html" }
+      ]
+    },
+    {
+      phaseId: 6,
+      region: "Mexico City (Abflugtag)",
+      checkIn:  "2027-01-28",
+      checkOut: "2027-01-29",
+      nights: 1,
+      earlyBook: false,
+      bookingUrl: "https://www.booking.com/searchresults.de.html?ss=Mexico+City+Airport&checkin=2027-01-28&checkout=2027-01-29&group_adults=2&group_children=1&age=2",
+      airbnbUrl:  "https://www.airbnb.com/s/Mexico-City/homes?checkin=2027-01-28&checkout=2027-01-29&adults=2&children=1",
+      criteria: { notes: "Flughafen-nah oder Zentrum — Uber zum Flughafen, 2h vorher einplanen" },
+      exampleHotels: []
+    }
+  ],
+
+  // ============================================================
+  // tours — Viator / GetYourGuide Ausflüge pro Phase
+  // ============================================================
+  tours: [
+    { phaseId: 2, name: "Monte Albán + Mitla Kombi-Tour",      provider: "Viator",        priceEur: 35, buggyFriendly: false, url: "https://www.viator.com/tours/Oaxaca/Monte-Alban-and-Mitla-tour/d28963", note: "Kombi mit Mietwagen billiger" },
+    { phaseId: 2, name: "Oaxaca Vegan Food Tour",               provider: "Airbnb Exp.",   priceEur: 40, buggyFriendly: true,  url: "https://www.airbnb.com/experiences/oaxaca-vegan-food-tour", note: "Alternative: selbst mit MEXIKO-MASTERPLAN erkunden" },
+    { phaseId: 3, name: "Sierra Sur Wanderung San Miguel Suchixtepec", provider: "Lokal / eigenständig", priceEur: 0, buggyFriendly: false, url: "https://www.oaxaca.travel/index.php/es/all-destinations-es/san-miguel-suchixtepec", note: "Cascada Río Gurajolais + Cerro de Zimlaltepec, Eintritt frei, Guide empfohlen (~200 MXN)" },
+    { phaseId: 3, name: "Pluma Hidalgo Kaffeefinca-Tour",       provider: "Lokal",         priceEur: 10, buggyFriendly: false, url: "https://maps.google.com/?q=Pluma+Hidalgo+Oaxaca", note: "Erste Kaffeeplantage Oaxacas, Führung + Degustation, Wasserfälle, Vogelbeobachtung" },
+    { phaseId: 4, name: "Buckelwal-Tour Huatulco",              provider: "Lokal (Hafen)", priceEur: 40, buggyFriendly: false, url: "https://www.viator.com/tours/Huatulco/whale-watching/d4334", note: "Morgens buchen, Max 3h, großes Boot" },
+    { phaseId: 4, name: "Kaffeefarmen + Cascada Ganztag",       provider: "Viator",        priceEur: 85, buggyFriendly: true,  url: "https://www.viator.com/tours/Huatulco/Day-Trip-to-Magical-Watefalls-and-Coffee-Plantation-from-Huatulco/d4334-9483P83", note: "Inkl. Mittagessen, Kindersitz anfragen" },
+    { phaseId: 5, name: "Chichén Itzá + Cenote Ik Kil + Valladolid", provider: "Viator", priceEur: 50, buggyFriendly: false, url: "https://www.viator.com/tours/Merida/Chichen-Itza-Cenote-and-Valladolid-from-Merida/d4452", note: "Alternativ: mit Mietwagen selbstständig" },
+    { phaseId: 5, name: "Celestún Flamingo-Tour ab Mérida",     provider: "GetYourGuide",  priceEur: 45, buggyFriendly: false, url: "https://www.getyourguide.com/merida-l105/celestun-biosphere-reserve-flamingo-tour-t143073/", note: "Morgens früh starten, Flamingos bis 10:00 aktiv" }
+  ],
+
+  // ============================================================
+  // charts — Daten für Chart.js Visualisierungen
+  // ============================================================
+  charts: {
+    // CHT-01 Donut — Kostenverteilung
+    costs: {
+      labels: ["Flüge (intern.)", "Inlandsflüge", "Unterkunft", "Essen", "Mietwagen", "Eintritte", "Reserve"],
+      values: [3036, 570, 5415, 2850, 1500, 750, 1350],
+      colors: ["#6366F1", "#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#06B6D4", "#8B5CF6"]
+    },
+    // CHT-02 Bar — Nächte pro Phase
+    nights: {
+      labels: ["CDMX", "Oaxaca", "Sierra Sur", "Huatulco", "Yucatán", "CDMX Return"],
+      values: [2, 16, 6, 13, 21, 1],
+      colors: ["#6366F1", "#10B981", "#84CC16", "#F59E0B", "#EF4444", "#06B6D4"]
+    },
+    // CHT-03 Line — Temperaturen pro Region/Phase
+    temp: {
+      labels: ["CDMX (Dez 1-2)", "Oaxaca (Dez 3-18)", "Sierra Sur (Dez 19-24)", "Huatulco (Dez–Jan)", "Yucatán (Jan 7-27)", "CDMX (Jan 28)"],
+      tempMin: [9, 10, 8, 22, 19, 8],
+      tempMax: [22, 27, 22, 31, 30, 21]
+    },
+    // CHT-04 Scatter — Eintritte gratis vs. kostenpflichtig
+    entries: {
+      data: [
+        { label: "Teotihuacán",        eur: 10,  gratis: false },
+        { label: "Xochimilco",          eur: 7,   gratis: false },
+        { label: "Monte Albán",         eur: 10,  gratis: false },
+        { label: "Mitla",               eur: 10,  gratis: false },
+        { label: "Hierve el Agua",      eur: 2.5, gratis: false },
+        { label: "Tlacolula Markt",     eur: 0,   gratis: true  },
+        { label: "Ocotlán Markt",       eur: 0,   gratis: true  },
+        { label: "Arrazola",            eur: 0,   gratis: true  },
+        { label: "Santo Domingo",       eur: 0,   gratis: true  },
+        { label: "Playa Maguey",        eur: 0,   gratis: true  },
+        { label: "La Ventanilla",       eur: 4,   gratis: false },
+        { label: "Chichén Itzá",        eur: 33,  gratis: false },
+        { label: "Uxmal",               eur: 29,  gratis: false },
+        { label: "Cenote Zaci",         eur: 3,   gratis: false },
+        { label: "Celestún Flamingos",  eur: 17,  gratis: false },
+        { label: "Río Lagartos",        eur: 24,  gratis: false },
+        { label: "Las Coloradas",       eur: 0,   gratis: true  },
+        { label: "Izamal",              eur: 0,   gratis: true  },
+        { label: "Plaza Grande Mérida", eur: 0,   gratis: true  },
+        { label: "Cenote Azul Bacalar", eur: 4,   gratis: false }
+      ]
+    }
+  },
+
+  // ============================================================
+  // faq — Offene Fragen + Checkliste
+  // status: "open" | "resolved"
+  // priority: "hoch" | "mittel" | "niedrig"
+  // ============================================================
+  faq: [
+    {
+      id: "faq-001",
+      question: "Kindersitz für Mietwagen — eigener oder vor Ort?",
+      status: "open",
+      priority: "hoch",
+      tip: "Babonbo.com liefert mexikaweit. Eigener Sitz: Airlines nehmen ihn oft kostenlos als Gepäck.",
+      answer: null
+    },
+    {
+      id: "faq-002",
+      question: "Impfungen für 2-jähriges Kind — Checkliste abgehakt?",
+      status: "open",
+      priority: "hoch",
+      tip: "Hepatitis A (ab 1J), Tollwut (Kleinkind erhöhtes Biss-Risiko), DTPa auffrischen. Reisemediziner 6–8 Wochen vorher!",
+      answer: null
+    },
+    {
+      id: "faq-003",
+      question: "Inlandsflüge — wann buchen? MEX→OAX, HUX→CUN (Sierra Sur = Mietwagen), CUN→MEX",
+      status: "open",
+      priority: "hoch",
+      tip: "3 Inlandsflüge statt 4: OAX→HUX entfällt (Mietwagen über Sierra Sur). Aeromexico / VivaAerobus ab ~60 USD/P. 4–6 Monate vorher buchen.",
+      answer: null
+    },
+    {
+      id: "faq-004",
+      question: "Dengue-Schutz Yucatán — welches Repellent für Kind 2J?",
+      status: "open",
+      priority: "hoch",
+      tip: "DEET ≥30% (kindergerechte Formulierung), Icaridin-Alternativen. Kinderarzt fragen. AC-Unterkunft hält Mücken draußen.",
+      answer: null
+    },
+    {
+      id: "faq-005",
+      question: "Erdbeben-App Mexiko — was installieren?",
+      status: "open",
+      priority: "mittel",
+      tip: "Sistema de Alerta Sísmica Mexicano (SASMEX) — Frühwarnung per App. In CDMX Sirenen hören! Drill kennen.",
+      answer: null
+    },
+    {
+      id: "faq-006",
+      question: "Buckelwal-Tour — lokaler Anbieter oder Viator?",
+      status: "open",
+      priority: "mittel",
+      tip: "Oceanico.org (Huatulco) empfohlen, ~90% Sichtungsrate. Morgens buchen (08:00), max. 3h, kein Panga-Boot.",
+      answer: null
+    },
+    {
+      id: "faq-007",
+      question: "Oaxaca Hotel Dezember — Hochsaison-Verfügbarkeit prüfen",
+      status: "open",
+      priority: "hoch",
+      tip: "Dezember = Hochsaison (Guelaguetza + Weihnachten). Jalatlaco-Viertel, mit Parkplatz. Früh buchen!",
+      answer: null
+    },
+    {
+      id: "faq-008",
+      question: "Mietwagen Mexiko — International Driver's License?",
+      status: "open",
+      priority: "mittel",
+      tip: "Österreichischer Führerschein reicht legal, aber IDP empfohlen (ÖAMTC, ~€25). Nur Mautstraßen tagsüber fahren.",
+      answer: null
+    },
+    {
+      id: "faq-009",
+      question: "Vegetarisch am Flughafen MEX bei Ankunft?",
+      status: "open",
+      priority: "niedrig",
+      tip: "Terminal 1 hat kaum Optionen. Terminal 2 (international) besser. Snacks mitnehmen für Kind.",
+      answer: null
+    },
+    {
+      id: "faq-010",
+      question: "La Ventanilla — Schildkröten im Dezember noch möglich?",
+      status: "open",
+      priority: "mittel",
+      tip: "Hauptsaison Schlüpflinge Mai–Oktober, Dez/Jan weniger aber möglich. Vor Ort beim Biosphären-Koordinator buchen.",
+      answer: null
+    },
+    {
+      id: "faq-011",
+      question: "Chiapas (San Cristóbal + Palenque) — bewusst ausgelassen?",
+      status: "resolved",
+      priority: "mittel",
+      tip: "Klassische Route geht Oaxaca → Chiapas → Yucatán (backpackinghacks.de). Wir fliegen direkt Oaxaca → Huatulco → Yucatán.",
+      answer: "Ja, bewusst. Chiapas erfordert lange Busfahrten (Nachtbus) — mit Kleinkind 2J nicht sinnvoll. Huatulco = bessere Alternative: Wale, Schildkröten, Familienstrände. Chiapas für eine künftige Mexiko-Reise merken."
+    },
+    {
+      id: "faq-012",
+      question: "Budget-Check: Backpacker-Referenz 35–50€/Tag Yucatán — warum wir 170–280€/Tag haben?",
+      status: "resolved",
+      priority: "niedrig",
+      tip: "Quelle: backpackinghacks.de/mexiko-route/ — Backpacker-Budget für Solo-Reisende in Hostels.",
+      answer: "Unterschied: Backpacker = Hostel-Dorm + Street Food + Bus. Wir = Boutique-Hotel (2 Zimmer) + Restaurant + Mietwagen + Kleinkind-Extras. Unsere €170–280/Tag ist korrekt für Familie Mid-Range. Eintritte (Chichén Itzá €33, Uxmal €29) entsprechen der Quelle."
+    },
+    {
+      id: "faq-013",
+      question: "Laguna Bacalar + Isla Holbox — in den Yucatán-Plan einbauen?",
+      status: "open",
+      priority: "mittel",
+      tip: "Bacalar: 2h südlich Tulum, türkisfarbener See, 1–2 Tage. Holbox: autofreie Insel NW Yucatán, 2–3 Tage. Beide von backpackinghacks explizit empfohlen.",
+      answer: null
+    }
+  ],
+
+  // ============================================================
+  // kriminalitaet — Sicherheitslage pro Bundesstaat (wie warndienst in Taiwan)
+  // level: "niedrig" | "mittel" | "erhoht" | "hoch"
+  // ============================================================
+  kriminalitaet: {
+    lastCheck: "2025-08-04",
+    reiseWarnung: "AT-MFA Reisewarnung Mexiko",
+    reiseWarnungUrl: "https://www.bmeia.gv.at/reise-aufenthalte/reiseinformation/land/mexiko/",
+    intro: "Mexiko hat regional sehr unterschiedliche Sicherheitslagen. Touristische Zonen in euren Reisephasen gelten als vergleichsweise sicher — die Hauptrisiken sind Taschendiebstahl und Opportunitätskriminalität, nicht organisierte Gewalt.",
+    bundesstaaten: [
+      {
+        name: "Mexico City (CDMX)",
+        level: "erhoht",
+        color: "#F59E0B",
+        icon: "🟡",
+        note: "Taschendiebstahl + Handydraub häufig. Touristenzonen (Condesa, Roma, Polanco) von Polizei bewacht. Uber nachts statt Taxi.",
+        phaseIds: [1, 5]
+      },
+      {
+        name: "Oaxaca (Stadt + Zentraltal)",
+        level: "niedrig",
+        color: "#4a9e4a",
+        icon: "🟢",
+        note: "Einer der sichersten Reiseorte Mexikos für Touristen. Geringe Kriminalität, entspannte Atmosphäre. Normale Vorsicht.",
+        phaseIds: [2]
+      },
+      {
+        name: "Oaxaca Küste (Huatulco)",
+        level: "niedrig",
+        color: "#4a9e4a",
+        icon: "🟢",
+        note: "Huatulco ist aktiv touristisch + geschützt. Sehr niedrige Kriminalität. Sicherstes Mexiko-Erlebnis der Reise.",
+        phaseIds: [3]
+      },
+      {
+        name: "Yucatán (Mérida, Uxmal, Valladolid)",
+        level: "niedrig",
+        color: "#4a9e4a",
+        icon: "🟢",
+        note: "Yucatán gilt als sicherster Bundesstaat Mexikos. Mérida = sicherste Großstadt Mexikos. Entspannte Reise.",
+        phaseIds: [4]
+      },
+      {
+        name: "Quintana Roo (nur wenn Transit)",
+        level: "mittel",
+        color: "#e8c547",
+        icon: "🟡",
+        note: "Cancún-Flughafen: Uber nehmen, kein inoffiz. Taxi. Tulum-Bereich hat Kartell-Präsenz. Touristenzonen vergleichsweise sicher.",
+        phaseIds: [4]
+      }
+    ],
+    scale: [
+      { key: "niedrig",  icon: "🟢", label: "Niedrig",  color: "#4a9e4a", meaning: "Normale touristische Vorsicht ausreichend." },
+      { key: "mittel",   icon: "🟡", label: "Mittel",   color: "#e8c547", meaning: "Erhöhte Aufmerksamkeit, Wertgegenstände nicht sichtbar." },
+      { key: "erhoht",   icon: "🟠", label: "Erhöht",   color: "#F59E0B", meaning: "Uber statt Taxi, abends in Gruppen, sicheres Hotel." },
+      { key: "hoch",     icon: "🔴", label: "Hoch",     color: "#EF4444", meaning: "Reiseziel meiden oder nur mit Vorbereitung." }
+    ],
+    tipps: [
+      "Uber statt Straßen-Taxi (CDMX, Flughäfen)",
+      "Wertsachen im Hotel-Safe, nicht sichtbar tragen",
+      "Kartenzahlung bevorzugen, wenig Bargeld",
+      "Notfallnummer Mexiko: 911 (funktioniert auch für Polizei/Feuerwehr/Sanitäter)",
+      "AT-Botschaft Mexiko: +52 55 5251 0806",
+      "Reiseversicherung mit Krankentransport abschließen"
+    ],
+    sources: [
+      { label: "AT-MFA Reiseinformation Mexiko", url: "https://www.bmeia.gv.at/reise-aufenthalte/reiseinformation/land/mexiko/" },
+      { label: "Auswärtiges Amt Deutschland", url: "https://www.auswaertiges-amt.de/de/service/laender/mexiko-node/mexikosicherheit/213648" },
+      { label: "US State Dept Mexico Travel Advisory", url: "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/mexico-travel-advisory.html" }
+    ]
+  },
+
+  // ============================================================
+  // seismik — Erdbebenskala (Mexiko sitzt auf dem Ring of Fire!)
+  // ============================================================
+  seismik: {
+    intro: "Mexiko liegt auf dem Ring of Fire und ist eines der seismisch aktivsten Länder der Welt. CDMX sitzt auf dem alten Texcoco-Seebett, das Erschütterungen extrem verstärkt. Oaxaca liegt nahe einer aktiven Plattengrenze. Das Risiko ist real — aber beherrschbar.",
+
+    facts: [
+      { value: "90.000+",    label: "registrierte Beben pro Jahr in Mexiko" },
+      { value: "~2.000",     label: "davon spürbar" },
+      { value: "3–5",        label: "Magnitude 6+ pro Jahr" },
+      { value: "1985 + 2017", label: "Großbeben CDMX (7.8 + 7.1)" },
+      { value: "Dez/Jan",    label: "Kein erhöhtes Saisonrisiko" },
+      { value: "60 Sek.",    label: "Max. Vorwarnung durch SASMEX (System de Alerta Sísmica)" }
+    ],
+
+    context: "CDMX 1985, M7.8: ~10.000 Tote. Seitdem massiv verschärfte Baunormen. CDMX 2017, M7.1: ~370 Tote trotz Großstadt. Oaxaca 2017, M8.2: ~100 Tote bei stärkstem Beben. Moderne Hotels und neuere Gebäude sind gut gebaut. Das Texcoco-Seebett (CDMX) verstärkt Beben deutlich stärker als in anderen Städten — Aufenthalt in CDMX ist nur 2 Nächte (Phase 1) und 1 Nacht (Phase 5).",
+
+    scale: [
+      { key: "niedrig",  icon: "▁", label: "Niedrig",  color: "#4a9e4a", meaning: "Tektonisch stabile Kalksteinplatte. Erdbeben selten spürbar." },
+      { key: "mittel",   icon: "▃", label: "Mittel",   color: "#e8c547", meaning: "Spürbare Beben möglich. Moderne Bauten sicher." },
+      { key: "erhoht",   icon: "▅", label: "Erhöht",   color: "#F59E0B", meaning: "Aktive Zone oder Plattengrenze nahe. Drills kennen, Vorwarnsystem aktiv." },
+      { key: "hoch",     icon: "▇", label: "Hoch",     color: "#EF4444", meaning: "Seebett-Untergrund oder direkte Plattengrenze. SASMEX-App pflicht, Drill kennen." }
+    ],
+
+    phases: {
+      1: { level: "hoch",    headline: "CDMX auf Texcoco-Seebett", note: "Aufenthalt nur 2 Nächte. SASMEX-App installieren, Drill: raus oder Türrahmen, weg von Fenstern." },
+      2: { level: "erhoht",  headline: "Oaxaca nahe Plattengrenze", note: "Beben 2017 (M8.2) — Altbauten prüfen. Modernes Hotel wählen. SASMEX-App hilft." },
+      3: { level: "mittel",  headline: "Sierra Sur — Bergregion", note: "Mäßige seismische Aktivität. Cabañas aus Holz — bei Beben ins Freie. Kein Tsunami-Risiko in den Bergen." },
+      4: { level: "mittel",  headline: "Huatulco Küste", note: "Küstenregion, einige Aktivität. Tsunami-Risiko bei sehr starken Beben (selten). Hotel-Evakuierungsplan kennen." },
+      5: { level: "niedrig", headline: "Yucatán — tektonisch stabil", note: "Kalksteinplatte, kaum seismische Aktivität. Entspannte Phase." },
+      6: { level: "hoch",    headline: "CDMX Rückkehr", note: "Nur 1 Nacht. Gleiches Risiko wie Phase 1. SASMEX-App aktiv lassen." }
+    },
+
+    apps: [
+      { name: "SASMEX / Alerta Sísmica",           what: "Nationales Frühwarnsystem Mexiko. Bis zu 60 Sekunden Vorwarnung in CDMX (Beben nahe Küste), weniger bei lokalen Beben.", note: "Pflicht in CDMX + Oaxaca" },
+      { name: "Sistema de Alerta Sísmica Mexicano", what: "Offizielle App. iOS + Android. Lärm-Alarm bei M5+.",                                                                      note: "iOS + Android" },
+      { name: "Protección Civil CDMX",              what: "Lokale Behörden-App für CDMX. Earthquake + Notfall-Informationen.",                                                        note: "Nur für CDMX relevant" }
+    ],
+
+    limits: "Erdbeben-Risiko heißt erhöhte Aufmerksamkeit, nicht Angst. Verkehrstote in Mexiko pro Jahr (~16.000) sind das 40-fache der Erdbebentoten. Drill kennen, App haben, modernes Hotel wählen — das ist ausreichende Vorbereitung."
+  },
+
+  // ============================================================
+  // hurrikan — Saison-Infos (Mexiko, Dez/Jan = außerhalb der Saison)
+  // ============================================================
+  hurrikan: {
+    saison:        "Juni – November",
+    reiseFenster:  "01. Dez 2026 – 29. Jan 2027",
+    status:        "Außerhalb der Hauptsaison",
+    statusLevel:   "niedrig",
+    statusColor:   "#4a9e4a",
+    intro:         "Die atlantische und pazifische Hurrikansaison endet formell am 30. November. Euer Reisefenster (Dez–Jan) liegt vollständig außerhalb. Nordpazifik-Tropenstürme im Dezember sind historisch extrem selten.",
+    regions: [
+      { name: "Karibik / Quintana Roo",  saison: "Jun–Nov", status: "Außerhalb", note: "CUN-Flughafen: kein Hurrikan-Risiko Dez/Jan" },
+      { name: "Pazifik-Küste (Huatulco)", saison: "Mai–Nov", status: "Außerhalb", note: "Pazifische Hurrikansaison endet Ende November" },
+      { name: "Yucatán-Halbinsel",       saison: "Jun–Nov", status: "Außerhalb", note: "Mérida: trocken und ruhig im Winter" }
+    ],
+    note: "Starkregen-Risiko: Dez/Jan = Trockenzeit in Oaxaca + Yucatán. Huatulco: sporadische Regenschauer möglich aber selten. Keine Vorsorge nötig außer leichter Jacke für Abende."
+  }
+
+};
+// EOF — window.DASHBOARD_NS vollständig definiert
+
+// Alias: alle Module lesen weiterhin window.MEXIKO_OAXACA ohne Änderung
+window.MEXIKO_OAXACA = window.DASHBOARD_NS;

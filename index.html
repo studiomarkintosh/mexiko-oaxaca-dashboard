@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oaxaca, Mexiko</title>
+
+  <!-- Eigenes Stylesheet zuerst — verhindert weißen Flash -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+</head>
+<body>
+
+  <!-- Passwort-Gate (app.js steuert: lokal = auto-unlock, remote = Gate anzeigen) -->
+  <div id="gate-overlay" class="gate-overlay">
+    <div class="gate-box">
+      <div class="gate-title">Oaxaca, Mexiko</div>
+      <div class="gate-subtitle">Reise-Dashboard · Familie</div>
+      <input type="password" id="gate-input" class="gate-input" placeholder="Passwort" autocomplete="off" />
+      <button id="gate-btn" class="gate-btn">Entsperren</button>
+      <div id="gate-error" class="gate-error">Falsches Passwort</div>
+    </div>
+  </div>
+
+  <!-- App-Wrapper — hidden bis Gate gelöst -->
+  <div id="app" class="hidden">
+
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="nav-bar">
+        <a href="/" class="nav-back">← Alle Reisen</a>
+        <span class="nav-title">Oaxaca, Mexiko</span>
+      </div>
+      <div class="nav-sections">
+        <a href="#karte"       class="nav-section-link">🗺 Karte</a>
+        <a href="#timeline"    class="nav-section-link">📅 Timeline</a>
+        <a href="#transfer"    class="nav-section-link">🚗 Transfer</a>
+        <a href="#zahlen"      class="nav-section-link">📊 Zahlen</a>
+        <a href="#videos"      class="nav-section-link">🎬 Videos</a>
+        <a href="#restaurants" class="nav-section-link">🌱 Restaurants</a>
+        <a href="#sights"      class="nav-section-link">📍 Highlights</a>
+        <a href="#booking"     class="nav-section-link">🏨 Booking</a>
+        <a href="#sicherheit"  class="nav-section-link">🛡 Sicherheit</a>
+        <a href="#fragen"      class="nav-section-link">❓ Fragen</a>
+      </div>
+    </nav>
+
+    <main>
+
+      <!-- Hero -->
+      <div class="hero hero--image" style="background-image:url('hero.jpg')">
+        <div class="container">
+          <h1 class="hero-title">Oaxaca, Mexiko</h1>
+          <p class="hero-subtitle">Oaxaca City, Valle de Oaxaca, Sierra Norte, Oaxacan Coast</p>
+          <div class="stats-bar">
+            <div class="stat">
+              <span class="stat-value">21 Tage</span>
+              <span class="stat-label">1. Mär – 22. Mär</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">6 Phasen</span>
+              <span class="stat-label">Oaxaca City → Valle de Oaxaca → Sierra Norte → Oaxacan Coast</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">–</span>
+              <span class="stat-label">Budget-Ziel</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">~24 Sights</span>
+              <span class="stat-label">Karte + Timeline</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">5 Videos</span>
+              <span class="stat-label">Curated YouTube</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">8 Fragen</span>
+              <span class="stat-label">FAQ Checkliste</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Karte -->
+      <section id="karte" class="section">
+        <div class="container">
+          <h2 class="section-title">Karte</h2>
+          <div id="map-filters"></div>
+          <div id="map"></div>
+          <div style="margin-top:0.75rem;text-align:right;">
+            <button id="map-gpx-btn" type="button" class="btn-secondary" style="font-size:0.8rem;padding:0.35rem 0.8rem;">⬇ GPX herunterladen</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Timeline -->
+      <section id="timeline" class="section">
+        <div class="container">
+          <h2 class="section-title">Timeline</h2>
+          <p class="section-subtitle">6 Phasen · 21 Tage · täglich mit Vormittag / Mittagsschlaf / Nachmittag</p>
+          <div id="timeline-container"></div>
+        </div>
+      </section>
+
+      <!-- Section: Transfer — Route, Flüge, Mietwagen, Regeln -->
+      <section id="transfer" class="section">
+        <div class="container">
+          <h2 class="section-title">Transfer</h2>
+          <p class="section-subtitle">Oaxaca City - Ankunft & Altstadt → Oaxaca City - Märkte & Kultur → Valle de Oaxaca - Dörfer & Handwerk → Sierra Norte - Natur & Ecoturismo</p>
+          <div id="transfer-content" class="placeholder">Transfer lädt…</div>
+        </div>
+      </section>
+
+      <!-- Section: Zahlen -->
+      <section id="zahlen" class="section">
+        <div class="container">
+          <h2 class="section-title">Zahlen</h2>
+          <div id="charts-content">
+            <div class="chart-grid">
+              <div class="chart-card">
+                <h3 class="chart-title">Kostenverteilung</h3>
+                <div class="chart-container" style="position:relative;height:300px">
+                  <canvas id="chart-costs"></canvas>
+                </div>
+              </div>
+              <div class="chart-card">
+                <h3 class="chart-title">Nächte pro Phase</h3>
+                <div class="chart-container" style="position:relative;height:300px">
+                  <canvas id="chart-nights"></canvas>
+                </div>
+              </div>
+              <div class="chart-card">
+                <h3 class="chart-title">Temperaturen (Min/Max) pro Region</h3>
+                <div class="chart-container" style="position:relative;height:300px">
+                  <canvas id="chart-temp-stops"></canvas>
+                </div>
+              </div>
+              <div class="chart-card">
+                <h3 class="chart-title">Niederschlag &amp; Temperatur im Reisezeitraum</h3>
+                <div class="chart-container" style="position:relative;height:300px">
+                  <canvas id="chart-rain"></canvas>
+                </div>
+              </div>
+              <div class="chart-card">
+                <h3 class="chart-title">Aktivitäts-Verteilung</h3>
+                <div class="chart-container" style="position:relative;height:300px">
+                  <canvas id="chart-activity-days"></canvas>
+                </div>
+              </div>
+              <div class="chart-card">
+                <h3 class="chart-title">Transfer-Distanzen</h3>
+                <div class="chart-container" style="position:relative;height:300px">
+                  <canvas id="chart-transport"></canvas>
+                </div>
+              </div>
+              <div class="chart-card">
+                <h3 class="chart-title">Interessen-Radar</h3>
+                <div class="chart-container" style="position:relative;height:300px">
+                  <canvas id="chart-radar"></canvas>
+                </div>
+              </div>
+              <div class="chart-card">
+                <h3 class="chart-title">Kosten: Unterkunft vs. Essen</h3>
+                <div class="chart-container" style="position:relative;height:300px">
+                  <canvas id="chart-food-vs-sleep"></canvas>
+                </div>
+              </div>
+              <div class="chart-card">
+                <h3 class="chart-title">Grünflächen-Anteil</h3>
+                <div class="chart-container" style="position:relative;height:300px">
+                  <canvas id="chart-greenspace"></canvas>
+                </div>
+              </div>
+              <div class="chart-card chart-card--wide">
+                <h3 class="chart-title">Luftqualität (AQI)</h3>
+                <div class="chart-container" style="position:relative;height:220px">
+                  <canvas id="chart-aqi"></canvas>
+                </div>
+              </div>
+            </div>
+            <div id="oepnv-card" class="oepnv-card" style="display:none"></div>
+            <div id="budget-counter-container"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Videos -->
+      <section id="videos" class="section">
+        <div class="container">
+          <h2 class="section-title">Videos</h2>
+          <div id="videos-content" class="placeholder">YouTube-Guide lädt…</div>
+        </div>
+      </section>
+
+      <!-- Section: Restaurants -->
+      <section id="restaurants" class="section">
+        <div class="container">
+          <h2 class="section-title">Restaurants</h2>
+          <p class="section-subtitle">Vegan · nach Phase gefiltert</p>
+          <div id="restaurants-content" class="placeholder">Restaurant-Guide lädt…</div>
+        </div>
+      </section>
+
+      <!-- Section: Highlights / Sights -->
+      <section id="sights" class="section">
+        <div class="container">
+          <h2 class="section-title">Highlights</h2>
+          <p class="section-subtitle">24 Sehenswürdigkeiten · nach Phase &amp; Kategorie filterbar</p>
+          <div id="sights-content" class="placeholder">Sights laden…</div>
+        </div>
+      </section>
+
+      <!-- Section: Booking -->
+      <section id="booking" class="section">
+        <div class="container">
+          <h2 class="section-title">Booking</h2>
+          <div id="booking-content" class="placeholder">Hotel-Research + Viator-Touren lädt…</div>
+        </div>
+      </section>
+
+      <!-- Section: Sicherheit — Kriminalität + Erdbeben + Hurrikan -->
+      <section id="sicherheit" class="section">
+        <div class="container">
+          <h2 class="section-title">Sicherheit</h2>
+          <p class="section-subtitle">Kriminalitätslage · Erdbeben (Ring of Fire) · Hurrikan-Saison</p>
+          <div id="sicherheit-content" class="placeholder">Sicherheitsdaten laden…</div>
+        </div>
+      </section>
+
+      <!-- Section: Fragen -->
+      <section id="fragen" class="section">
+        <div class="container">
+          <h2 class="section-title">Offene Fragen</h2>
+          <div id="faq-content" class="placeholder">10 offene Fragen lädt…</div>
+        </div>
+      </section>
+
+    </main>
+  </div><!-- /#app -->
+
+  <!-- Scripts — KEIN type="module" (CORS bei file://)
+       Reihenfolge: data.js → map.js → charts.js → app.js -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="js/data.js?v=1790807646"></script>
+  <script src="js/booking-results.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/transfer.js"></script>
+  <script src="js/videos.js"></script>
+  <script src="js/restaurants.js"></script>
+  <script src="js/sights.js?v=1790807646"></script>
+  <script src="js/booking.js"></script>
+  <script src="js/faq.js"></script>
+  <script src="js/sicherheit.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
