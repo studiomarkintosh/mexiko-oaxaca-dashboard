@@ -968,7 +968,6 @@ body {
 .chart-container { position: relative; height: 340px; }
 .chart-container--sm { height: 260px; }
 .chart-container canvas { display: block; }
-.sec-chart-wrap { position: relative; height: 220px; margin-top: 1.25rem; }
 
 /* ÖPNV Card */
 .oepnv-card { margin-top: 24px; }

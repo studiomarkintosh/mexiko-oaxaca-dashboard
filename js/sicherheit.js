@@ -74,12 +74,12 @@ window.sicherheitModule = (function() {
       html += '</div>';
     }
 
-    // Chart-Canvas für Kriminalität & Erdbeben
+    // Chart-Card für Kriminalität & Erdbeben (gleiche Struktur wie Zahlen-Sektion)
     if (topic.id === 'kriminalitaet' && topic.regions && topic.regions.length) {
-      html += '<div class="sec-chart-wrap"><canvas id="chart-sec-krim" aria-label="Kriminalit\u00e4tslevel nach Region"></canvas></div>';
+      html += '<div class="chart-card" style="margin-top:1.5rem"><h3 class="chart-title">Sicherheitslevel nach Region</h3><div class="chart-container chart-container--sm"><canvas id="chart-sec-krim" role="img" aria-label="Kriminalit\u00e4tslevel nach Region"></canvas></div></div>';
     }
     if (topic.id === 'erdbeben') {
-      html += '<div class="sec-chart-wrap"><canvas id="chart-sec-seismik" aria-label="Erdbebenrisiko pro Phase"></canvas></div>';
+      html += '<div class="chart-card" style="margin-top:1.5rem"><h3 class="chart-title">Erdbebenrisiko pro Reisephase</h3><div class="chart-container chart-container--sm"><canvas id="chart-sec-seismik" role="img" aria-label="Erdbebenrisiko pro Phase"></canvas></div></div>';
     }
 
     // Tipps
