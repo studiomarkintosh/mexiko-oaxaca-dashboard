@@ -277,7 +277,7 @@ window.sicherheitModule = (function() {
     var crimCanvas = document.getElementById('chart-sec-krim');
     if (crimCanvas && ns.kriminalitaet && ns.kriminalitaet.bundesstaaten) {
       var bs = ns.kriminalitaet.bundesstaaten;
-      new Chart(crimCanvas, {
+      try { new Chart(crimCanvas.getContext('2d'), {
         type: 'bar',
         data: {
           labels: bs.map(function(b) { return b.name; }),
@@ -310,7 +310,7 @@ window.sicherheitModule = (function() {
             y: { ticks: { color: '#7A6A58' }, grid: { display: false } }
           }
         }
-      });
+      }); } catch(e) { console.warn('[sicherheit.js] Krim-Chart:', e.message); }
     }
 
     // Chart: Erdbebenrisiko pro Phase (bar)
@@ -318,7 +318,7 @@ window.sicherheitModule = (function() {
     if (seisCanvas && ns.seismik && ns.seismik.phases) {
       var phases = ns.seismik.phases;
       var pIds = Object.keys(phases).sort(function(a, b) { return parseInt(a) - parseInt(b); });
-      new Chart(seisCanvas, {
+      try { new Chart(seisCanvas.getContext('2d'), {
         type: 'bar',
         data: {
           labels: pIds.map(function(id) { return 'Phase ' + id; }),
@@ -348,7 +348,7 @@ window.sicherheitModule = (function() {
             y: { min: 0, max: 3, grid: { color: 'rgba(120,80,40,0.07)' }, ticks: { color: '#7A6A58', callback: function(v) { return ['', 'Gering', 'Mittel', 'Hoch'][v] || ''; } } }
           }
         }
-      });
+      }); } catch(e) { console.warn('[sicherheit.js] Seismik-Chart:', e.message); }
     }
   }
 
@@ -369,7 +369,8 @@ window.sicherheitModule = (function() {
       // Sofort aus data.js rendern
       var topics = _legacyToTopics(ns);
       _renderTopics(el, topics, (ns.kriminalitaet && ns.kriminalitaet.sources) || [], ns.kriminalitaet && ns.kriminalitaet.lastCheck);
-      _initSecCharts(ns);
+      // Charts nach Layout-Berechnung initialisieren (Canvas braucht Dimensionen)
+      setTimeout(function() { try { _initSecCharts(ns); } catch(e) { console.warn('[sicherheit.js] Chart-Init fehlgeschlagen:', e.message); } }, 0);
       console.log('[sicherheit.js] Fallback-Daten gerendert (' + topics.length + ' Topics)');
 
       // Live-Fetch im Hintergrund — überschreibt nur bei Erfolg
