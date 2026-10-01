@@ -940,30 +940,78 @@ body {
 
 .chart-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
 }
+.chart-card--wide { grid-column: 1 / -1; }
 
 .chart-card {
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--gray-200);
-  border-radius: var(--radius);
-  padding: 24px;
+  border-radius: 16px;
+  padding: 32px;
   box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease;
 }
+.chart-card:hover { box-shadow: var(--shadow-md); }
 
 .chart-title {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 700;
-  color: var(--gray-800);
-  margin-bottom: 16px;
+  color: var(--foggy);
+  margin-bottom: 24px;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.10em;
 }
 
-.chart-container { position: relative; }
+.chart-container { position: relative; height: 340px; }
+.chart-container--sm { height: 260px; }
 .chart-container canvas { display: block; }
+.sec-chart-wrap { position: relative; height: 220px; margin-top: 1.25rem; }
+
+/* ÖPNV Card */
+.oepnv-card { margin-top: 24px; }
+.oepnv-inner {
+  background: var(--card);
+  border: 1px solid var(--gray-200);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: var(--shadow-sm);
+}
+.oepnv-bezahlung {
+  background: var(--gray-100);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--foggy);
+  margin-bottom: 20px;
+}
+.oepnv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.oepnv-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: var(--gray-100);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.oepnv-icon { font-size: 1.5rem; line-height: 1; flex-shrink: 0; }
+.oepnv-item strong { font-size: 14px; font-weight: 600; display: block; margin-bottom: 2px; }
+.oepnv-item p { font-size: 12px; color: var(--foggy); margin: 0; }
+.oepnv-tipp {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: rgba(0,166,153,0.07);
+  border-left: 3px solid var(--babu);
+  border-radius: 0 10px 10px 0;
+  font-size: 13px;
+  color: var(--foggy);
+}
 
 .budget-counter {
   background: #fff;

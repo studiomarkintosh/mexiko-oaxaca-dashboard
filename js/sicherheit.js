@@ -74,6 +74,14 @@ window.sicherheitModule = (function() {
       html += '</div>';
     }
 
+    // Chart-Canvas für Kriminalität & Erdbeben
+    if (topic.id === 'kriminalitaet' && topic.regions && topic.regions.length) {
+      html += '<div class="sec-chart-wrap"><canvas id="chart-sec-krim" aria-label="Kriminalit\u00e4tslevel nach Region"></canvas></div>';
+    }
+    if (topic.id === 'erdbeben') {
+      html += '<div class="sec-chart-wrap"><canvas id="chart-sec-seismik" aria-label="Erdbebenrisiko pro Phase"></canvas></div>';
+    }
+
     // Tipps
     if (topic.tipps && topic.tipps.length) {
       html += '<h4 class="sec-sub">Tipps</h4><ul class="sk-list">';
@@ -257,6 +265,94 @@ window.sicherheitModule = (function() {
   }
 
   // -------------------------------------------------------
+  // Sicherheits-Charts initialisieren
+  // -------------------------------------------------------
+
+  function _initSecCharts(ns) {
+    if (typeof Chart === 'undefined') return;
+
+    var lv = { gering: 1, niedrig: 1, mittel: 2, erhoht: 3, hoch: 3 };
+
+    // Chart: Kriminalität nach Region (horizontal bar)
+    var crimCanvas = document.getElementById('chart-sec-krim');
+    if (crimCanvas && ns.kriminalitaet && ns.kriminalitaet.bundesstaaten) {
+      var bs = ns.kriminalitaet.bundesstaaten;
+      new Chart(crimCanvas, {
+        type: 'bar',
+        data: {
+          labels: bs.map(function(b) { return b.name; }),
+          datasets: [{
+            data:            bs.map(function(b) { return lv[b.level] || 2; }),
+            backgroundColor: bs.map(function(b) { return (_LEVEL_META[b.level] || _LEVEL_META['mittel']).color; }),
+            borderRadius: 6, borderSkipped: false, barThickness: 28
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { backgroundColor: '#fff', titleColor: '#1A1208', bodyColor: '#7A6A58', borderColor: 'rgba(180,140,100,0.18)', borderWidth: 1, cornerRadius: 10, padding: 12,
+              callbacks: {
+                label: function(ctx) {
+                  var meta = _LEVEL_META[bs[ctx.dataIndex].level] || _LEVEL_META['mittel'];
+                  return ' ' + meta.icon + ' ' + meta.label;
+                },
+                afterLabel: function(ctx) {
+                  var note = bs[ctx.dataIndex].note;
+                  return note ? note : '';
+                }
+              }
+            }
+          },
+          scales: {
+            x: { min: 0, max: 3, grid: { color: 'rgba(120,80,40,0.07)' }, ticks: { color: '#7A6A58', callback: function(v) { return ['', 'Gering', 'Mittel', 'Hoch'][v] || ''; } } },
+            y: { ticks: { color: '#7A6A58' }, grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // Chart: Erdbebenrisiko pro Phase (bar)
+    var seisCanvas = document.getElementById('chart-sec-seismik');
+    if (seisCanvas && ns.seismik && ns.seismik.phases) {
+      var phases = ns.seismik.phases;
+      var pIds = Object.keys(phases).sort(function(a, b) { return parseInt(a) - parseInt(b); });
+      new Chart(seisCanvas, {
+        type: 'bar',
+        data: {
+          labels: pIds.map(function(id) { return 'Phase ' + id; }),
+          datasets: [{
+            data:            pIds.map(function(id) { return lv[phases[id].level] || 2; }),
+            backgroundColor: pIds.map(function(id) { return (_LEVEL_META[phases[id].level] || _LEVEL_META['mittel']).color; }),
+            borderRadius: 6, borderSkipped: false
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { backgroundColor: '#fff', titleColor: '#1A1208', bodyColor: '#7A6A58', borderColor: 'rgba(180,140,100,0.18)', borderWidth: 1, cornerRadius: 10, padding: 12,
+              callbacks: {
+                title: function(items) { return 'Phase ' + pIds[items[0].dataIndex]; },
+                label: function(ctx) {
+                  var ph = phases[pIds[ctx.dataIndex]];
+                  var meta = _LEVEL_META[ph.level] || _LEVEL_META['mittel'];
+                  return ' ' + meta.icon + ' ' + meta.label + (ph.headline ? ' · ' + ph.headline : '');
+                }
+              }
+            }
+          },
+          scales: {
+            x: { ticks: { color: '#7A6A58' }, grid: { display: false } },
+            y: { min: 0, max: 3, grid: { color: 'rgba(120,80,40,0.07)' }, ticks: { color: '#7A6A58', callback: function(v) { return ['', 'Gering', 'Mittel', 'Hoch'][v] || ''; } } }
+          }
+        }
+      });
+    }
+  }
+
+  // -------------------------------------------------------
   // Init — Live-Fetch, dann Fallback
   // -------------------------------------------------------
 
@@ -270,36 +366,21 @@ window.sicherheitModule = (function() {
       var slug = (ns.meta && ns.meta.slug) || 'mexiko-oaxaca';
       var base = (window.API_BASE_URL || 'http://localhost:8080').replace(/\/$/, '');
 
-      // Live-Fetch versuchen
-      el.innerHTML = '<p class="sec-block-intro" style="color:var(--muted)">🔄 Lade aktuelle Reisewarnungen…</p>';
+      // Sofort aus data.js rendern
+      var topics = _legacyToTopics(ns);
+      _renderTopics(el, topics, (ns.kriminalitaet && ns.kriminalitaet.sources) || [], ns.kriminalitaet && ns.kriminalitaet.lastCheck);
+      _initSecCharts(ns);
+      console.log('[sicherheit.js] Fallback-Daten gerendert (' + topics.length + ' Topics)');
 
-      var done = false;
-
-      // Timeout-Fallback nach 8s
-      var fallbackTimer = setTimeout(function() {
-        if (done) return;
-        done = true;
-        console.warn('[sicherheit.js] Live-Fetch Timeout — Fallback auf data.js');
-        var topics = _legacyToTopics(ns);
-        _renderTopics(el, topics, (ns.kriminalitaet && ns.kriminalitaet.sources) || [], ns.kriminalitaet && ns.kriminalitaet.lastCheck);
-      }, 8000);
-
+      // Live-Fetch im Hintergrund — überschreibt nur bei Erfolg
       fetch(base + '/security?slug=' + encodeURIComponent(slug))
         .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
         .then(function(data) {
-          if (done) return;
-          done = true;
-          clearTimeout(fallbackTimer);
           console.log('[sicherheit.js] Live-Daten geladen:', data.dest, data.lastCheck);
           _renderTopics(el, data.topics || [], data.sources || [], data.lastCheck);
         })
         .catch(function(e) {
-          if (done) return;
-          done = true;
-          clearTimeout(fallbackTimer);
-          console.warn('[sicherheit.js] Live-Fetch fehlgeschlagen:', e.message, '— Fallback auf data.js');
-          var topics = _legacyToTopics(ns);
-          _renderTopics(el, topics, (ns.kriminalitaet && ns.kriminalitaet.sources) || [], ns.kriminalitaet && ns.kriminalitaet.lastCheck);
+          console.warn('[sicherheit.js] Live-Fetch fehlgeschlagen:', e.message);
         });
     }
   };
